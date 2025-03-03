@@ -7,59 +7,54 @@ use Illuminate\Http\Request;
 
 class ProductImageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return response()->json(ProductImage::all(), 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'product_id' => 'required|exists:products,product_id',
+        ]);
+
+        $image = ProductImage::create($request->all());
+        return response()->json($image, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(ProductImage $productImage)
+    public function show($id)
     {
-        //
+        $image = ProductImage::find($id);
+        if (!$image) {
+            return response()->json(['message' => 'ProductImage not found'], 404);
+        }
+        return response()->json($image, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ProductImage $productImage)
+    public function update(Request $request, $id)
     {
-        //
+        $image = ProductImage::find($id);
+        if (!$image) {
+            return response()->json(['message' => 'ProductImage not found'], 404);
+        }
+
+        $request->validate([
+            'name' => 'string',
+            'product_id' => 'exists:products,product_id',
+        ]);
+
+        $image->update($request->all());
+        return response()->json($image, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, ProductImage $productImage)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ProductImage $productImage)
-    {
-        //
+        $image = ProductImage::find($id);
+        if (!$image) {
+            return response()->json(['message' => 'ProductImage not found'], 404);
+        }
+        $image->delete();
+        return response()->json(['message' => 'ProductImage deleted'], 200);
     }
 }

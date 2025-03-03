@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('stores', function (Blueprint $table) {
             // Store ID
             $table->id('store_id');
-
+ 
             // Store Name
             $table->string('name');
 

@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable; // Jika ingin gunakan default Laravel Auth
-use Illuminate\Database\Eloquent\Model; // Jika tidak menggunakan default Auth, pakai Model biasa
+use Illuminate\Foundation\Auth\User as Authenticatable; 
+use Illuminate\Database\Eloquent\Model; 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 
 class User extends Authenticatable
 {
@@ -15,14 +17,20 @@ class User extends Authenticatable
         'password',
         'email',
         'profile_image',
-        'address'
+        'address',
+        'name'
     ];
 
-    // Jika pakai bcrypt, set mutator:
-    // public function setPasswordAttribute($value)
-    // {
-    //     $this->attributes['password'] = bcrypt($value);
-    // }
+    protected $hidden = [
+        'password', 
+    ];
+
+    protected function password(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => bcrypt($value),
+        );
+    }
 
     public function reviews()
     {

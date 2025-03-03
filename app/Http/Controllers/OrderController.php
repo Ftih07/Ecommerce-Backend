@@ -7,59 +7,60 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        // Contoh: load cart & payment
+        $orders = Order::with(['cart', 'payment'])->get();
+        return response()->json($orders, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'final_price' => 'required|numeric',
+            'cart_id' => 'required|exists:carts,cart_id',
+            'payment_id' => 'required|exists:payments,payment_id',
+            'order_date' => 'required|date',
+        ]);
+
+        $order = Order::create($request->all());
+        return response()->json($order, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
+    public function show($id)
     {
-        //
+        $order = Order::with(['cart', 'payment'])->find($id);
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+        return response()->json($order, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
+    public function update(Request $request, $id)
     {
-        //
+        $order = Order::find($id);
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        $request->validate([
+            'final_price' => 'numeric',
+            'cart_id' => 'exists:carts,cart_id',
+            'payment_id' => 'exists:payments,payment_id',
+            'order_date' => 'date',
+        ]);
+
+        $order->update($request->all());
+        return response()->json($order, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $order)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
-    {
-        //
+        $order = Order::find($id);
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+        $order->delete();
+        return response()->json(['message' => 'Order deleted'], 200);
     }
 }

@@ -7,59 +7,58 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        // Contoh: load user & product
+        $reviews = Review::with(['user', 'product'])->get();
+        return response()->json($reviews, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_id' => 'required|exists:users,user_id',
+            'product_id' => 'required|exists:products,product_id',
+            'content' => 'nullable|string',
+        ]);
+
+        $review = Review::create($request->all());
+        return response()->json($review, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Review $review)
+    public function show($id)
     {
-        //
+        $review = Review::with(['user', 'product'])->find($id);
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
+        return response()->json($review, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Review $review)
+    public function update(Request $request, $id)
     {
-        //
+        $review = Review::find($id);
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
+
+        $request->validate([
+            'content' => 'string',
+            'user_id' => 'exists:users,user_id',
+            'product_id' => 'exists:products,product_id',
+        ]);
+
+        $review->update($request->all());
+        return response()->json($review, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Review $review)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Review $review)
-    {
-        //
+        $review = Review::find($id);
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
+        $review->delete();
+        return response()->json(['message' => 'Review deleted'], 200);
     }
 }

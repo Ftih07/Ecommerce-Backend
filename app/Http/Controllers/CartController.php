@@ -7,59 +7,60 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        // Contoh: load user & product
+        $carts = Cart::with(['user', 'product'])->get();
+        return response()->json($carts, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'quantity' => 'required|integer',
+            'total_price' => 'required|numeric',
+            'product_id' => 'required|exists:products,product_id',
+            'user_id' => 'required|exists:users,user_id',
+        ]);
+
+        $cart = Cart::create($request->all());
+        return response()->json($cart, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Cart $cart)
+    public function show($id)
     {
-        //
+        $cart = Cart::with(['user', 'product'])->find($id);
+        if (!$cart) {
+            return response()->json(['message' => 'Cart not found'], 404);
+        }
+        return response()->json($cart, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cart $cart)
+    public function update(Request $request, $id)
     {
-        //
+        $cart = Cart::find($id);
+        if (!$cart) {
+            return response()->json(['message' => 'Cart not found'], 404);
+        }
+
+        $request->validate([
+            'quantity' => 'integer',
+            'total_price' => 'numeric',
+            'product_id' => 'exists:products,product_id',
+            'user_id' => 'exists:users,user_id',
+        ]);
+
+        $cart->update($request->all());
+        return response()->json($cart, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Cart $cart)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Cart $cart)
-    {
-        //
+        $cart = Cart::find($id);
+        if (!$cart) {
+            return response()->json(['message' => 'Cart not found'], 404);
+        }
+        $cart->delete();
+        return response()->json(['message' => 'Cart deleted'], 200);
     }
 }

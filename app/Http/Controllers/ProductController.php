@@ -7,59 +7,67 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        // Contoh: load store & category juga
+        $products = Product::with(['store', 'category'])->get();
+        return response()->json($products, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'thumbnail_image' => 'nullable|string',
+            'stock' => 'required|integer',
+            'status' => 'required|in:active,inactive',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'store_id' => 'required|exists:stores,store_id',
+            'category_id' => 'required|exists:categories,category_id',
+        ]);
+
+        $product = Product::create($request->all());
+        return response()->json($product, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        // Contoh: load relasi
+        $product = Product::with(['store', 'category', 'reviews', 'productImages'])
+                          ->find($id);
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+        return response()->json($product, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $request->validate([
+            'stock' => 'integer',
+            'status' => 'in:active,inactive',
+            'price' => 'numeric',
+            'store_id' => 'exists:stores,store_id',
+            'category_id' => 'exists:categories,category_id',
+        ]);
+
+        $product->update($request->all());
+        return response()->json($product, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Product $product)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+        $product->delete();
+        return response()->json(['message' => 'Product deleted'], 200);
     }
 }
