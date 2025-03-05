@@ -17,6 +17,7 @@ class ProductImageController extends Controller
         $request->validate([
             'name' => 'required|string',
             'product_id' => 'required|exists:products,product_id',
+            'path' => 'string',
         ]);
 
         $image = ProductImage::create($request->all());
@@ -42,6 +43,7 @@ class ProductImageController extends Controller
         $request->validate([
             'name' => 'string',
             'product_id' => 'exists:products,product_id',
+            'path' => 'string',
         ]);
 
         $image->update($request->all());

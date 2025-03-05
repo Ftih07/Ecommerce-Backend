@@ -15,7 +15,7 @@ return new class extends Migration
             // Order ID
             $table->id('order_id');
 
-            // Final Price
+            // Final Price 
             $table->decimal('final_price', 10, 2);
 
             // Cart ID & Payment ID

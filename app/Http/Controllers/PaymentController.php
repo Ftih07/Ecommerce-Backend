@@ -40,8 +40,8 @@ class PaymentController extends Controller
         }
 
         $request->validate([
-            'payment_method' => 'string',
-            'status' => 'in:pending,paid,failed',
+            'payment_method' => 'sometimes|string',
+            'status' => 'sometimes|in:pending,paid,failed',
         ]);
 
         $payment->update($request->all());

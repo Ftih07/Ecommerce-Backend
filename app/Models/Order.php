@@ -14,7 +14,7 @@ class Order extends Model
         'final_price',
         'cart_id',
         'payment_id',
-        'order_date'
+        'order_date' 
     ];
 
     public function cart()

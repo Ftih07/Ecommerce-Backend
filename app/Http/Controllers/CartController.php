@@ -44,11 +44,11 @@ class CartController extends Controller
         }
 
         $request->validate([
-            'quantity' => 'integer',
-            'total_price' => 'numeric',
-            'product_id' => 'exists:products,product_id',
-            'user_id' => 'exists:users,user_id',
-        ]);
+            'quantity' => 'sometimes|integer',
+            'total_price' => 'sometimes|numeric',
+            'product_id' => 'sometimes|exists:products,product_id',
+            'user_id' => 'sometimes|exists:users,user_id',
+        ]);        
 
         $cart->update($request->all());
         return response()->json($cart, 200);

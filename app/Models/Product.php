@@ -18,7 +18,7 @@ class Product extends Model
         'description',
         'price',
         'store_id',
-        'category_id'
+        'category_id' 
     ];
 
     public function store()

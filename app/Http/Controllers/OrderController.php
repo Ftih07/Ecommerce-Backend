@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
+use App\Models\Order; 
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -44,10 +44,10 @@ class OrderController extends Controller
         }
 
         $request->validate([
-            'final_price' => 'numeric',
-            'cart_id' => 'exists:carts,cart_id',
-            'payment_id' => 'exists:payments,payment_id',
-            'order_date' => 'date',
+            'final_price' => 'sometimes|numeric',
+            'cart_id' => 'sometimes|exists:carts,cart_id',
+            'payment_id' => 'sometimes|exists:payments,payment_id',
+            'order_date' => 'sometimes|date',
         ]);
 
         $order->update($request->all());

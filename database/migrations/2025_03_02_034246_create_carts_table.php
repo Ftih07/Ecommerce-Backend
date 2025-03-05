@@ -18,7 +18,7 @@ return new class extends Migration
             // Quantity
             $table->integer('quantity');
 
-            // Total Price
+            // Total Price 
             $table->decimal('total_price', 10, 2);
 
             // Product ID & User ID
