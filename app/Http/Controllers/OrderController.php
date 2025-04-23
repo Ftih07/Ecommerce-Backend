@@ -5,14 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
-/**
- * @OA\Info(
- *      version="1.0.0",
- *      title="Order API",
- *      description="Dokumentasi API untuk mengelola data Order"
- * )
- */
-
 class OrderController extends Controller
 {
     /**

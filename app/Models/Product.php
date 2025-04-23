@@ -5,6 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @OA\Schema(
+ *     schema="Product",
+ *     type="object",
+ *     title="Product",
+ *     description="Data produk yang tersedia",
+ *     required={"product_id", "name", "price", "category_id"},
+ *     @OA\Property(property="product_id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Smartphone"),
+ *     @OA\Property(property="thumbnail_image", type="string", example="path/to/thumbnail.jpg"),
+ *     @OA\Property(property="stock", type="integer", example=100),
+ *     @OA\Property(property="status", type="string", example="available"),
+ *     @OA\Property(property="description", type="string", example="A high-quality smartphone"),
+ *     @OA\Property(property="price", type="number", format="float", example=199.99),
+ *     @OA\Property(property="store_id", type="integer", example=1),
+ *     @OA\Property(property="category_id", type="integer", example=1),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-23T12:00:00Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-23T12:30:00Z")
+ * )
+ */
+
 class Product extends Model
 {
     use HasFactory;
