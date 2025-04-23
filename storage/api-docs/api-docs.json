@@ -1,0 +1,174 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Order API",
+        "description": "Dokumentasi API untuk mengelola data Order",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/orders": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get list of orders",
+                "operationId": "2cd7e03021e72d9d799c12dfe179c865",
+                "responses": {
+                    "200": {
+                        "description": "List of orders"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Create new order",
+                "operationId": "d690d6834318e9b064df441e854de8b9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "final_price",
+                                    "cart_id",
+                                    "payment_id",
+                                    "order_date"
+                                ],
+                                "properties": {
+                                    "final_price": {
+                                        "type": "number"
+                                    },
+                                    "cart_id": {
+                                        "type": "integer"
+                                    },
+                                    "payment_id": {
+                                        "type": "integer"
+                                    },
+                                    "order_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Order created"
+                    }
+                }
+            }
+        },
+        "/api/orders/{id}": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get specific order",
+                "operationId": "c29621029e70f65247909d3e09031118",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order detail"
+                    },
+                    "404": {
+                        "description": "Order not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Update specific order",
+                "operationId": "6a7029f5510ca08e28a2d58a5fe19439",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "final_price": {
+                                        "type": "number"
+                                    },
+                                    "cart_id": {
+                                        "type": "integer"
+                                    },
+                                    "payment_id": {
+                                        "type": "integer"
+                                    },
+                                    "order_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Order updated"
+                    },
+                    "404": {
+                        "description": "Order not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Delete specific order",
+                "operationId": "303a7b797887b66c7790c4c187b54790",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order deleted"
+                    },
+                    "404": {
+                        "description": "Order not found"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Order",
+            "description": "Order"
+        }
+    ]
+}
