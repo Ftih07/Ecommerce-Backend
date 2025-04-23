@@ -10,9 +10,13 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/api/orders",
-     *     summary="Get list of orders",
-     *     tags={"Order"},
-     *     @OA\Response(response="200", description="List of orders")
+     *     summary="Get all orders",
+     *     tags={"Orders"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Order"))
+     *     )
      * )
      */
 
@@ -26,19 +30,27 @@ class OrderController extends Controller
     /**
      * @OA\Post(
      *     path="/api/orders",
-     *     summary="Create new order",
-     *     tags={"Order"},
+     *     summary="Create a new order",
+     *     tags={"Orders"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"final_price","cart_id","payment_id","order_date"},
+     *             required={"final_price", "cart_id", "payment_id", "order_date"},
      *             @OA\Property(property="final_price", type="number"),
      *             @OA\Property(property="cart_id", type="integer"),
      *             @OA\Property(property="payment_id", type="integer"),
      *             @OA\Property(property="order_date", type="string", format="date")
      *         )
      *     ),
-     *     @OA\Response(response=201, description="Order created")
+     *     @OA\Response(
+     *         response=201,
+     *         description="Order created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Order")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     )
      * )
      */
 
@@ -57,13 +69,23 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/api/orders/{id}",
-     *     summary="Get specific order",
-     *     tags={"Order"},
+     *     summary="Get an order by ID",
+     *     tags={"Orders"},
      *     @OA\Parameter(
-     *         name="id", in="path", required=true, @OA\Schema(type="integer")
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(response=200, description="Order detail"),
-     *     @OA\Response(response=404, description="Order not found")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order found",
+     *         @OA\JsonContent(ref="#/components/schemas/Order")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found"
+     *     )
      * )
      */
     public function show($id)
@@ -77,12 +99,16 @@ class OrderController extends Controller
     /**
      * @OA\Put(
      *     path="/api/orders/{id}",
-     *     summary="Update specific order",
-     *     tags={"Order"},
+     *     summary="Update an order",
+     *     tags={"Orders"},
      *     @OA\Parameter(
-     *         name="id", in="path", required=true, @OA\Schema(type="integer")
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\RequestBody(
+     *         required=true,
      *         @OA\JsonContent(
      *             @OA\Property(property="final_price", type="number"),
      *             @OA\Property(property="cart_id", type="integer"),
@@ -90,8 +116,15 @@ class OrderController extends Controller
      *             @OA\Property(property="order_date", type="string", format="date")
      *         )
      *     ),
-     *     @OA\Response(response=200, description="Order updated"),
-     *     @OA\Response(response=404, description="Order not found")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Order")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found"
+     *     )
      * )
      */
     public function update(Request $request, $id)
@@ -114,13 +147,22 @@ class OrderController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/orders/{id}",
-     *     summary="Delete specific order",
-     *     tags={"Order"},
+     *     summary="Delete an order",
+     *     tags={"Orders"},
      *     @OA\Parameter(
-     *         name="id", in="path", required=true, @OA\Schema(type="integer")
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(response=200, description="Order deleted"),
-     *     @OA\Response(response=404, description="Order not found")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found"
+     *     )
      * )
      */
     public function destroy($id)
