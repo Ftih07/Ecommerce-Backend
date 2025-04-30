@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 
@@ -162,3 +163,17 @@ class PaymentController extends Controller
         return response()->json(['message' => 'Payment deleted'], 200);
     }
 }
+
+/**
+ * @OA\Schema(
+ *     schema="Payment",
+ *     type="object",
+ *     title="Payment",
+ *     required={"id", "payment_method", "status"},
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="payment_method", type="string", example="Credit Card"),
+ *     @OA\Property(property="status", type="string", example="paid"),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ */

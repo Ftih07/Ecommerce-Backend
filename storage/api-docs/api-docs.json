@@ -25,7 +25,7 @@
                     "Carts"
                 ],
                 "summary": "Get all carts",
-                "operationId": "88963ab10a86ebeb4e81c70489a3ee39",
+                "operationId": "267834c76f4f604c89ceb2d0aba43bfc",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -47,7 +47,7 @@
                     "Carts"
                 ],
                 "summary": "Create a new cart",
-                "operationId": "06affd160606e43fb60f39628e5bd33a",
+                "operationId": "2176b5481799873176eccc4def6e8ca7",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -102,7 +102,7 @@
                     "Carts"
                 ],
                 "summary": "Get a cart by ID",
-                "operationId": "d0f9c90f921e5cace8d847eb077f6b3d",
+                "operationId": "a2104e24d474cf308579ee3074ead149",
                 "parameters": [
                     {
                         "name": "id",
@@ -134,7 +134,7 @@
                     "Carts"
                 ],
                 "summary": "Update a cart",
-                "operationId": "873541d907e8e905f5ef54604acd7c9b",
+                "operationId": "afa2a12dec9e03654f26142094367925",
                 "parameters": [
                     {
                         "name": "id",
@@ -191,7 +191,7 @@
                     "Carts"
                 ],
                 "summary": "Delete a cart",
-                "operationId": "904192354e6febb57372f82c766440b6",
+                "operationId": "1ec691dc69823fc0a41f12762eea2292",
                 "parameters": [
                     {
                         "name": "id",
@@ -218,7 +218,7 @@
                     "Orders"
                 ],
                 "summary": "Get all orders",
-                "operationId": "2cd7e03021e72d9d799c12dfe179c865",
+                "operationId": "803fc5d32177a888e12dd7a8f9d0e6d4",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -240,7 +240,7 @@
                     "Orders"
                 ],
                 "summary": "Create a new order",
-                "operationId": "d690d6834318e9b064df441e854de8b9",
+                "operationId": "33d737c93193573b1687e463b1562642",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -295,7 +295,7 @@
                     "Orders"
                 ],
                 "summary": "Get an order by ID",
-                "operationId": "c29621029e70f65247909d3e09031118",
+                "operationId": "323fecf06eebc01290343e81c470453f",
                 "parameters": [
                     {
                         "name": "id",
@@ -327,7 +327,7 @@
                     "Orders"
                 ],
                 "summary": "Update an order",
-                "operationId": "6a7029f5510ca08e28a2d58a5fe19439",
+                "operationId": "d1bc63a1af95b13f6712635541478040",
                 "parameters": [
                     {
                         "name": "id",
@@ -384,7 +384,7 @@
                     "Orders"
                 ],
                 "summary": "Delete an order",
-                "operationId": "303a7b797887b66c7790c4c187b54790",
+                "operationId": "3bdb01ae061166f8fcc7a9f60544a80a",
                 "parameters": [
                     {
                         "name": "id",
@@ -411,7 +411,7 @@
                     "Payments"
                 ],
                 "summary": "Get all payments",
-                "operationId": "826dc6b24dd704607aa018a59207dd96",
+                "operationId": "a67c4dcf277fa699515fd3b6d4835388",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -433,7 +433,7 @@
                     "Payments"
                 ],
                 "summary": "Create a new payment",
-                "operationId": "5e2794ba3d3c64e70873367505e4a751",
+                "operationId": "6b47fbea138d1f528831ed3e92ee46fd",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -484,7 +484,7 @@
                     "Payments"
                 ],
                 "summary": "Get a payment by ID",
-                "operationId": "a9a7656e0f22931dbcedc57a2d959554",
+                "operationId": "055c1b4080a8c5b59d53aa69a505abf5",
                 "parameters": [
                     {
                         "name": "id",
@@ -516,7 +516,7 @@
                     "Payments"
                 ],
                 "summary": "Update a payment",
-                "operationId": "9f607012ea3accda178adb489aa28da2",
+                "operationId": "256d3cd03413b7fd8f82cf4491f08847",
                 "parameters": [
                     {
                         "name": "id",
@@ -571,7 +571,7 @@
                     "Payments"
                 ],
                 "summary": "Delete a payment",
-                "operationId": "eee625edf09d69ad0d35b893a3b4f087",
+                "operationId": "fd511b89a9c38f94cb4d1e5a35fe9f40",
                 "parameters": [
                     {
                         "name": "id",
@@ -588,261 +588,6 @@
                     },
                     "404": {
                         "description": "Payment not found"
-                    }
-                }
-            }
-        },
-        "/reviews": {
-            "get": {
-                "tags": [
-                    "Reviews"
-                ],
-                "summary": "Get all reviews",
-                "description": "Mengambil semua review beserta data user dan produk terkait",
-                "operationId": "getReviews",
-                "responses": {
-                    "200": {
-                        "description": "Berhasil mengambil data review",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Review"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Terjadi kesalahan server"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Reviews"
-                ],
-                "summary": "Create a review",
-                "description": "Membuat review baru untuk produk",
-                "operationId": "createReview",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "user_id",
-                                    "product_id",
-                                    "rating"
-                                ],
-                                "properties": {
-                                    "user_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "product_id": {
-                                        "type": "integer",
-                                        "example": 3
-                                    },
-                                    "rating": {
-                                        "type": "integer",
-                                        "example": 4
-                                    },
-                                    "review": {
-                                        "type": "string",
-                                        "example": "Produk bagus, sangat puas!"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Review berhasil dibuat",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Review created successfully"
-                                        },
-                                        "review": {
-                                            "$ref": "#/components/schemas/Review"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Request tidak valid"
-                    },
-                    "500": {
-                        "description": "Terjadi kesalahan server"
-                    }
-                }
-            }
-        },
-        "/reviews/{id}": {
-            "get": {
-                "tags": [
-                    "Reviews"
-                ],
-                "summary": "Get a review by ID",
-                "description": "Mengambil review berdasarkan ID",
-                "operationId": "getReviewById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID review",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Berhasil mengambil review",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Review"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Review tidak ditemukan"
-                    },
-                    "500": {
-                        "description": "Terjadi kesalahan server"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Reviews"
-                ],
-                "summary": "Update a review",
-                "description": "Memperbarui review berdasarkan ID",
-                "operationId": "updateReview",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID review",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "user_id": {
-                                        "type": "integer",
-                                        "example": 2
-                                    },
-                                    "product_id": {
-                                        "type": "integer",
-                                        "example": 4
-                                    },
-                                    "rating": {
-                                        "type": "integer",
-                                        "example": 5
-                                    },
-                                    "review": {
-                                        "type": "string",
-                                        "example": "Produk semakin baik!"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Review berhasil diperbarui",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Review updated successfully"
-                                        },
-                                        "review": {
-                                            "$ref": "#/components/schemas/Review"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Review tidak ditemukan"
-                    },
-                    "500": {
-                        "description": "Terjadi kesalahan server"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Reviews"
-                ],
-                "summary": "Delete a review",
-                "description": "Menghapus review berdasarkan ID",
-                "operationId": "deleteReview",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID review",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Review berhasil dihapus",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Review deleted successfully"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Review tidak ditemukan"
-                    },
-                    "500": {
-                        "description": "Terjadi kesalahan server"
                     }
                 }
             }
@@ -1314,6 +1059,261 @@
                     }
                 }
             }
+        },
+        "/reviews": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Get all reviews",
+                "description": "Mengambil semua review beserta data user dan produk terkait",
+                "operationId": "getReviews",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data review",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Review"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan server"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Create a review",
+                "description": "Membuat review baru untuk produk",
+                "operationId": "createReview",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "product_id",
+                                    "rating"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "rating": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "review": {
+                                        "type": "string",
+                                        "example": "Produk bagus, sangat puas!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Review berhasil dibuat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Review created successfully"
+                                        },
+                                        "review": {
+                                            "$ref": "#/components/schemas/Review"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Request tidak valid"
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan server"
+                    }
+                }
+            }
+        },
+        "/reviews/{id}": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Get a review by ID",
+                "description": "Mengambil review berdasarkan ID",
+                "operationId": "getReviewById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID review",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil review",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Review"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Review tidak ditemukan"
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan server"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Update a review",
+                "description": "Memperbarui review berdasarkan ID",
+                "operationId": "updateReview",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID review",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "rating": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "review": {
+                                        "type": "string",
+                                        "example": "Produk semakin baik!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Review berhasil diperbarui",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Review updated successfully"
+                                        },
+                                        "review": {
+                                            "$ref": "#/components/schemas/Review"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Review tidak ditemukan"
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan server"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Delete a review",
+                "description": "Menghapus review berdasarkan ID",
+                "operationId": "deleteReview",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID review",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review berhasil dihapus",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Review deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Review tidak ditemukan"
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan server"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1446,7 +1446,7 @@
                     "final_price": {
                         "type": "number",
                         "format": "float",
-                        "example": 199.99
+                        "example": 20
                     },
                     "cart_id": {
                         "type": "integer",
@@ -1476,14 +1476,13 @@
             },
             "Payment": {
                 "title": "Payment",
-                "description": "Informasi pembayaran",
                 "required": [
-                    "payment_id",
+                    "id",
                     "payment_method",
                     "status"
                 ],
                 "properties": {
-                    "payment_id": {
+                    "id": {
                         "type": "integer",
                         "example": 1
                     },
@@ -1493,22 +1492,15 @@
                     },
                     "status": {
                         "type": "string",
-                        "enum": [
-                            "pending",
-                            "paid",
-                            "failed"
-                        ],
                         "example": "paid"
                     },
                     "created_at": {
                         "type": "string",
-                        "format": "date-time",
-                        "example": "2025-04-23T12:00:00Z"
+                        "format": "date-time"
                     },
                     "updated_at": {
                         "type": "string",
-                        "format": "date-time",
-                        "example": "2025-04-23T12:30:00Z"
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -1772,16 +1764,16 @@
             "description": "Payments"
         },
         {
-            "name": "Reviews",
-            "description": "Reviews"
-        },
-        {
             "name": "Stores",
             "description": "Stores"
         },
         {
             "name": "Users",
             "description": "Users"
+        },
+        {
+            "name": "Reviews",
+            "description": "Reviews"
         }
     ]
 }

@@ -2,15 +2,15 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\StoreController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\StoreController;
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\PaymentController;
+use App\Http\Controllers\API\OrderController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
