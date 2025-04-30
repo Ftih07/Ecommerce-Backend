@@ -10,7 +10,7 @@ class PaymentController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/payments",
+     *     path="/payments",
      *     summary="Get all payments",
      *     tags={"Payments"},
      *     @OA\Response(

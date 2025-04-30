@@ -10,7 +10,7 @@ class CartController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/carts",
+     *     path="/carts",
      *     summary="Get all carts",
      *     tags={"Carts"},
      *     @OA\Response(
@@ -30,7 +30,7 @@ class CartController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/carts",
+     *     path="/carts",
      *     summary="Create a new cart",
      *     tags={"Carts"},
      *     @OA\RequestBody(
@@ -70,7 +70,7 @@ class CartController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/carts/{id}",
+     *     path="/carts/{id}",
      *     summary="Get a cart by ID",
      *     tags={"Carts"},
      *     @OA\Parameter(
@@ -102,7 +102,7 @@ class CartController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/carts/{id}",
+     *     path="/carts/{id}",
      *     summary="Update a cart",
      *     tags={"Carts"},
      *     @OA\Parameter(
@@ -152,7 +152,7 @@ class CartController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/carts/{id}",
+     *     path="/carts/{id}",
      *     summary="Delete a cart",
      *     tags={"Carts"},
      *     @OA\Parameter(
