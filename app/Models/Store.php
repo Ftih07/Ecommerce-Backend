@@ -10,14 +10,13 @@ use Illuminate\Database\Eloquent\Model;
  *     schema="Store",
  *     type="object",
  *     title="Store",
- *     description="Data toko tempat produk dijual",
- *     required={"store_id", "name", "city"},
+ *     required={"name", "city"},
  *     @OA\Property(property="store_id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="TechStore"),
- *     @OA\Property(property="city", type="string", example="New York"),
- *     @OA\Property(property="profile_image", type="string", example="path/to/profile_image.jpg"),
- *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-23T12:00:00Z"),
- *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-23T12:30:00Z")
+ *     @OA\Property(property="name", type="string", example="Toko Elektronik"),
+ *     @OA\Property(property="city", type="string", example="Bandung"),
+ *     @OA\Property(property="profile_image", type="string", nullable=true, example="http://example.com/image.jpg"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-30T12:00:00Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-30T12:30:00Z")
  * )
  */
 

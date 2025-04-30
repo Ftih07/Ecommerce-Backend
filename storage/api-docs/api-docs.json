@@ -847,6 +847,221 @@
                 }
             }
         },
+        "/stores": {
+            "get": {
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "Get all stores",
+                "description": "Mengambil semua data toko",
+                "operationId": "getStores",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data toko",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Store"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "Create a new store",
+                "description": "Membuat toko baru",
+                "operationId": "createStore",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "city"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Toko Elektronik"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Bandung"
+                                    },
+                                    "profile_image": {
+                                        "type": "string",
+                                        "example": "http://example.com/image.jpg",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Store berhasil dibuat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Store"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Request tidak valid"
+                    }
+                }
+            }
+        },
+        "/stores/{id}": {
+            "get": {
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "Get a store by ID",
+                "description": "Mengambil data toko berdasarkan ID",
+                "operationId": "getStoreById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID toko",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Toko ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Store"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Toko tidak ditemukan"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "Update store data",
+                "description": "Memperbarui data toko berdasarkan ID",
+                "operationId": "updateStore",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID toko",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Toko Gadget"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Jakarta"
+                                    },
+                                    "profile_image": {
+                                        "type": "string",
+                                        "example": "http://example.com/gadget.jpg",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Toko berhasil diperbarui",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Store"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Toko tidak ditemukan"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "Delete a store",
+                "description": "Menghapus toko berdasarkan ID",
+                "operationId": "deleteStore",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID toko",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Toko berhasil dihapus",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Store deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Toko tidak ditemukan"
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "tags": [
@@ -1457,9 +1672,7 @@
             },
             "Store": {
                 "title": "Store",
-                "description": "Data toko tempat produk dijual",
                 "required": [
-                    "store_id",
                     "name",
                     "city"
                 ],
@@ -1470,25 +1683,26 @@
                     },
                     "name": {
                         "type": "string",
-                        "example": "TechStore"
+                        "example": "Toko Elektronik"
                     },
                     "city": {
                         "type": "string",
-                        "example": "New York"
+                        "example": "Bandung"
                     },
                     "profile_image": {
                         "type": "string",
-                        "example": "path/to/profile_image.jpg"
+                        "example": "http://example.com/image.jpg",
+                        "nullable": true
                     },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2025-04-23T12:00:00Z"
+                        "example": "2025-04-30T12:00:00Z"
                     },
                     "updated_at": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2025-04-23T12:30:00Z"
+                        "example": "2025-04-30T12:30:00Z"
                     }
                 },
                 "type": "object"
@@ -1560,6 +1774,10 @@
         {
             "name": "Reviews",
             "description": "Reviews"
+        },
+        {
+            "name": "Stores",
+            "description": "Stores"
         },
         {
             "name": "Users",
