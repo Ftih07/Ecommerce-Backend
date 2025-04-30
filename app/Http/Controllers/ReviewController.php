@@ -24,7 +24,7 @@ class ReviewController extends Controller
      *         description="Terjadi kesalahan server"
      *     )
      * )
-     */
+     */ 
     // GET /reviews
     public function index()
     {

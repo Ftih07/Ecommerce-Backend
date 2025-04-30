@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  *         property="user",
  *         ref="#/components/schemas/User",
  *         nullable=true
- *     ),
+ *     ), 
  *     @OA\Property(
  *         property="product",
  *         ref="#/components/schemas/Product",
