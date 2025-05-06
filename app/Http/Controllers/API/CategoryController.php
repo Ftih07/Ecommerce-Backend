@@ -57,12 +57,10 @@ class CategoryController extends Controller
     {
         $query = Category::query();
 
-        // Filter by name if provided
         if ($request->has('name')) {
             $query->where('name', 'like', '%' . $request->name . '%');
         }
 
-        // Paginate results
         $perPage = $request->per_page ?? 15;
         $categories = $query->paginate($perPage);
 
@@ -280,7 +278,6 @@ class CategoryController extends Controller
         try {
             $category = Category::findOrFail($id);
 
-            // Check if this category has any products before deletion
             if ($category->products()->count() > 0) {
                 return response()->json([
                     'message' => 'Cannot delete category that has products. Remove products first or reassign them.'
