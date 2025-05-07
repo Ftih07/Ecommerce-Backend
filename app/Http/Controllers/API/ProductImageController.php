@@ -6,12 +6,6 @@ use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-/**
- * @OA\Tag(
- *     name="Product Images",
- * )
- */
-
 class ProductImageController extends Controller
 {
     /**
