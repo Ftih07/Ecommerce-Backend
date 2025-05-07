@@ -15,7 +15,7 @@ return new class extends Migration
             // Produck ID
             $table->id('product_id');
 
-            // Product Name
+            // Product Name 
             $table->string('name');
 
             // Thumbnail Image

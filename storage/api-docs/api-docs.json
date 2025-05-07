@@ -1315,6 +1315,471 @@
                 }
             }
         },
+        "/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get list of all products",
+                "operationId": "39c74c9badb6c7c74d2612d1c7eeb685",
+                "responses": {
+                    "200": {
+                        "description": "Successful response with list of products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a new product",
+                "operationId": "0254f499bf820a11da3ca96eeb4eaf9f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "stock",
+                                    "status",
+                                    "price",
+                                    "store_id",
+                                    "category_id"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Smartphone X200"
+                                    },
+                                    "thumbnail_image": {
+                                        "type": "string",
+                                        "example": "images/thumb.jpg"
+                                    },
+                                    "stock": {
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ],
+                                        "example": "active"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "A flagship smartphone"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 299.99
+                                    },
+                                    "store_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get a specific product by ID",
+                "operationId": "6385b7efdf5ca41c147947f781f53f7d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with product data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update an existing product",
+                "operationId": "03be1ae429dbbe857cdde002ea09bdce",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Product Name"
+                                    },
+                                    "thumbnail_image": {
+                                        "type": "string",
+                                        "example": "updated_thumb.jpg"
+                                    },
+                                    "stock": {
+                                        "type": "integer",
+                                        "example": 150
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ],
+                                        "example": "inactive"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated description"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 249.99
+                                    },
+                                    "store_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete a product",
+                "operationId": "78dacacfa3eac02c6fc5dde0c0cf3790",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        },
+        "/product-images": {
+            "get": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Get list of all product images",
+                "operationId": "7d239e28af79ac485e7147b5cfc502ae",
+                "responses": {
+                    "200": {
+                        "description": "List of product images",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductImage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Create a new product image",
+                "operationId": "6651e900a3d851d935af58840f61e47d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "product_id",
+                                    "path"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "image1.jpg"
+                                    },
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "example": "uploads/images/image1.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product image created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductImage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/product-images/{id}": {
+            "get": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Get a specific product image by ID",
+                "operationId": "349756bcbde0c7049f725277c79f4359",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product image data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductImage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product image not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Update a product image",
+                "operationId": "8b3ebce8589d1b390bb0137ad7b48ee5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "updated_image.jpg"
+                                    },
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "example": "uploads/updated_image.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product image updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductImage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product image not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Delete a product image",
+                "operationId": "25c20db020594e10c511737a06f719e0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product image deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ProductImage deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product image not found"
+                    }
+                }
+            }
+        },
         "/reviews": {
             "get": {
                 "tags": [
@@ -2230,60 +2695,80 @@
             },
             "Product": {
                 "title": "Product",
-                "description": "Data produk yang tersedia",
+                "description": "Product data schema",
                 "required": [
                     "product_id",
                     "name",
                     "price",
+                    "stock",
+                    "status",
+                    "store_id",
                     "category_id"
                 ],
                 "properties": {
                     "product_id": {
+                        "description": "Product primary key",
                         "type": "integer",
                         "example": 1
                     },
                     "name": {
+                        "description": "Name of the product",
                         "type": "string",
-                        "example": "Smartphone"
+                        "example": "Smartphone X200"
                     },
                     "thumbnail_image": {
+                        "description": "Path to the thumbnail image",
                         "type": "string",
-                        "example": "path/to/thumbnail.jpg"
+                        "example": "images/products/thumb.jpg",
+                        "nullable": true
                     },
                     "stock": {
+                        "description": "Current stock quantity",
                         "type": "integer",
-                        "example": 100
+                        "example": 50
                     },
                     "status": {
+                        "description": "Availability status of the product",
                         "type": "string",
-                        "example": "available"
+                        "enum": [
+                            "active",
+                            "inactive"
+                        ],
+                        "example": "active"
                     },
                     "description": {
+                        "description": "Detailed product description",
                         "type": "string",
-                        "example": "A high-quality smartphone"
+                        "example": "Latest smartphone with high-resolution display",
+                        "nullable": true
                     },
                     "price": {
+                        "description": "Price of the product",
                         "type": "number",
                         "format": "float",
-                        "example": 199.99
+                        "example": 499.99
                     },
                     "store_id": {
+                        "description": "Foreign key referencing store",
                         "type": "integer",
                         "example": 1
                     },
                     "category_id": {
+                        "description": "Foreign key referencing category",
                         "type": "integer",
-                        "example": 1
+                        "example": 2
                     },
                     "created_at": {
+                        "description": "Record creation timestamp",
                         "type": "string",
                         "format": "date-time",
                         "example": "2025-04-23T12:00:00Z"
                     },
                     "updated_at": {
+                        "description": "Record last update timestamp",
                         "type": "string",
                         "format": "date-time",
-                        "example": "2025-04-23T12:30:00Z"
+                        "example": "2025-04-24T08:30:00Z"
                     }
                 },
                 "type": "object"
@@ -2474,6 +2959,12 @@
         }
     },
     "tags": [
+        {
+            "name": "Products"
+        },
+        {
+            "name": "Product Images"
+        },
         {
             "name": "Carts",
             "description": "Carts"
