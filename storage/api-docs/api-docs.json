@@ -732,17 +732,100 @@
                     "Orders"
                 ],
                 "summary": "Get all orders",
+                "description": "Retrieve all orders with optional filtering and pagination",
                 "operationId": "8dde1c1ae8cabae242c1a5be03108d24",
+                "parameters": [
+                    {
+                        "name": "payment_id",
+                        "in": "query",
+                        "description": "Filter by payment ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "cart_id",
+                        "in": "query",
+                        "description": "Filter by cart ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "from_date",
+                        "in": "query",
+                        "description": "Filter by order date (from)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to_date",
+                        "in": "query",
+                        "description": "Filter by order date (to)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Order"
-                                    }
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Order"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -754,6 +837,7 @@
                     "Orders"
                 ],
                 "summary": "Create a new order",
+                "description": "Create a new order with validation of related cart and payment entities",
                 "operationId": "3445eb8babc1446ba74ce89e084de604",
                 "requestBody": {
                     "required": true,
@@ -768,17 +852,21 @@
                                 ],
                                 "properties": {
                                     "final_price": {
-                                        "type": "number"
+                                        "type": "number",
+                                        "example": 150000
                                     },
                                     "cart_id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 1
                                     },
                                     "payment_id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 1
                                     },
                                     "order_date": {
                                         "type": "string",
-                                        "format": "date"
+                                        "format": "date",
+                                        "example": "2023-01-15"
                                     }
                                 },
                                 "type": "object"
@@ -792,13 +880,43 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Order"
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order created successfully"
+                                        },
+                                        "order": {
+                                            "$ref": "#/components/schemas/Order"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
                     },
+                    "404": {
+                        "description": "Cart or Payment not found"
+                    },
                     "422": {
-                        "description": "Validation error"
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Cart already has an order"
                     }
                 }
             }
@@ -809,11 +927,13 @@
                     "Orders"
                 ],
                 "summary": "Get an order by ID",
+                "description": "Retrieve detailed order information by ID with related entities",
                 "operationId": "afa7dfe6084274eb77b0dc1215401b30",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "Order ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -841,11 +961,13 @@
                     "Orders"
                 ],
                 "summary": "Update an order",
+                "description": "Update order details with validation of related entities",
                 "operationId": "53f214879ada474a74a8a28579716d85",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "Order ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -859,17 +981,21 @@
                             "schema": {
                                 "properties": {
                                     "final_price": {
-                                        "type": "number"
+                                        "type": "number",
+                                        "example": 160000
                                     },
                                     "cart_id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 1
                                     },
                                     "payment_id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 1
                                     },
                                     "order_date": {
                                         "type": "string",
-                                        "format": "date"
+                                        "format": "date",
+                                        "example": "2023-01-16"
                                     }
                                 },
                                 "type": "object"
@@ -883,13 +1009,40 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Order"
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order updated successfully"
+                                        },
+                                        "order": {
+                                            "$ref": "#/components/schemas/Order"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
                     },
                     "404": {
                         "description": "Order not found"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -898,11 +1051,13 @@
                     "Orders"
                 ],
                 "summary": "Delete an order",
+                "description": "Delete an existing order",
                 "operationId": "e2910119fd4bb7988ec805a3a34fcf5a",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "Order ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -911,10 +1066,62 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Order deleted"
+                        "description": "Order deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Order not found"
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get user's orders",
+                "description": "Retrieve all orders for a specific user",
+                "operationId": "aa11cb66ae76e728c9412fcda8efd411",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Order"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
                     }
                 }
             }
@@ -1104,6 +1311,265 @@
                     },
                     "404": {
                         "description": "Payment not found"
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get list of all products",
+                "operationId": "39c74c9badb6c7c74d2612d1c7eeb685",
+                "responses": {
+                    "200": {
+                        "description": "Successful response with list of products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a new product",
+                "operationId": "0254f499bf820a11da3ca96eeb4eaf9f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "stock",
+                                    "status",
+                                    "price",
+                                    "store_id",
+                                    "category_id"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Smartphone X200"
+                                    },
+                                    "thumbnail_image": {
+                                        "type": "string",
+                                        "example": "images/thumb.jpg"
+                                    },
+                                    "stock": {
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ],
+                                        "example": "active"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "A flagship smartphone"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 299.99
+                                    },
+                                    "store_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get a specific product by ID",
+                "operationId": "6385b7efdf5ca41c147947f781f53f7d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with product data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update an existing product",
+                "operationId": "03be1ae429dbbe857cdde002ea09bdce",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Product Name"
+                                    },
+                                    "thumbnail_image": {
+                                        "type": "string",
+                                        "example": "updated_thumb.jpg"
+                                    },
+                                    "stock": {
+                                        "type": "integer",
+                                        "example": 150
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ],
+                                        "example": "inactive"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated description"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 249.99
+                                    },
+                                    "store_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete a product",
+                "operationId": "78dacacfa3eac02c6fc5dde0c0cf3790",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
                     }
                 }
             }
@@ -2023,60 +2489,80 @@
             },
             "Product": {
                 "title": "Product",
-                "description": "Data produk yang tersedia",
+                "description": "Product data schema",
                 "required": [
                     "product_id",
                     "name",
                     "price",
+                    "stock",
+                    "status",
+                    "store_id",
                     "category_id"
                 ],
                 "properties": {
                     "product_id": {
+                        "description": "Product primary key",
                         "type": "integer",
                         "example": 1
                     },
                     "name": {
+                        "description": "Name of the product",
                         "type": "string",
-                        "example": "Smartphone"
+                        "example": "Smartphone X200"
                     },
                     "thumbnail_image": {
+                        "description": "Path to the thumbnail image",
                         "type": "string",
-                        "example": "path/to/thumbnail.jpg"
+                        "example": "images/products/thumb.jpg",
+                        "nullable": true
                     },
                     "stock": {
+                        "description": "Current stock quantity",
                         "type": "integer",
-                        "example": 100
+                        "example": 50
                     },
                     "status": {
+                        "description": "Availability status of the product",
                         "type": "string",
-                        "example": "available"
+                        "enum": [
+                            "active",
+                            "inactive"
+                        ],
+                        "example": "active"
                     },
                     "description": {
+                        "description": "Detailed product description",
                         "type": "string",
-                        "example": "A high-quality smartphone"
+                        "example": "Latest smartphone with high-resolution display",
+                        "nullable": true
                     },
                     "price": {
+                        "description": "Price of the product",
                         "type": "number",
                         "format": "float",
-                        "example": 199.99
+                        "example": 499.99
                     },
                     "store_id": {
+                        "description": "Foreign key referencing store",
                         "type": "integer",
                         "example": 1
                     },
                     "category_id": {
+                        "description": "Foreign key referencing category",
                         "type": "integer",
-                        "example": 1
+                        "example": 2
                     },
                     "created_at": {
+                        "description": "Record creation timestamp",
                         "type": "string",
                         "format": "date-time",
                         "example": "2025-04-23T12:00:00Z"
                     },
                     "updated_at": {
+                        "description": "Record last update timestamp",
                         "type": "string",
                         "format": "date-time",
-                        "example": "2025-04-23T12:30:00Z"
+                        "example": "2025-04-24T08:30:00Z"
                     }
                 },
                 "type": "object"
@@ -2267,6 +2753,9 @@
         }
     },
     "tags": [
+        {
+            "name": "Products"
+        },
         {
             "name": "Carts",
             "description": "Carts"
