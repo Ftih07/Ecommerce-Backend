@@ -1574,6 +1574,212 @@
                 }
             }
         },
+        "/product-images": {
+            "get": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Get list of all product images",
+                "operationId": "7d239e28af79ac485e7147b5cfc502ae",
+                "responses": {
+                    "200": {
+                        "description": "List of product images",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductImage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Create a new product image",
+                "operationId": "6651e900a3d851d935af58840f61e47d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "product_id",
+                                    "path"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "image1.jpg"
+                                    },
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "example": "uploads/images/image1.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product image created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductImage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/product-images/{id}": {
+            "get": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Get a specific product image by ID",
+                "operationId": "349756bcbde0c7049f725277c79f4359",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product image data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductImage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product image not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Update a product image",
+                "operationId": "8b3ebce8589d1b390bb0137ad7b48ee5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "updated_image.jpg"
+                                    },
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "example": "uploads/updated_image.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product image updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductImage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product image not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Delete a product image",
+                "operationId": "25c20db020594e10c511737a06f719e0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product image deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ProductImage deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product image not found"
+                    }
+                }
+            }
+        },
         "/reviews": {
             "get": {
                 "tags": [
@@ -2755,6 +2961,9 @@
     "tags": [
         {
             "name": "Products"
+        },
+        {
+            "name": "Product Images"
         },
         {
             "name": "Carts",
