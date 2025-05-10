@@ -5,12 +5,27 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Repositories\Interfaces\CartRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
+    /**
+     * @var CartRepositoryInterface
+     */
+    protected $cartRepository;
+
+    /**
+     * CartController constructor.
+     *
+     * @param CartRepositoryInterface $cartRepository
+     */
+    public function __construct(CartRepositoryInterface $cartRepository)
+    {
+        $this->cartRepository = $cartRepository;
+    }
     /**
      * @OA\Get(
      *     path="/carts",
@@ -55,14 +70,7 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Cart::with(['user', 'product', 'order']);
-
-        if ($request->has('user_id')) {
-            $query->where('user_id', $request->user_id);
-        }
-
-        $perPage = $request->per_page ?? 15;
-        $carts = $query->paginate($perPage);
+        $carts = $this->cartRepository->getAll($request);
 
         return response()->json([
             'data' => $carts->items(),
@@ -125,19 +133,7 @@ class CartController extends Controller
         }
 
         try {
-            $product = Product::findOrFail($request->product_id);
-
-            $totalPrice = $product->price * $request->quantity;
-
-            $cart = Cart::create([
-                'quantity' => $request->quantity,
-                'total_price' => $totalPrice,
-                'product_id' => $request->product_id,
-                'user_id' => $request->user_id,
-            ]);
-
-            $cart->load(['user', 'product']);
-
+            $cart = $this->cartRepository->create($request->all());
             return response()->json($cart, 201);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Product not found'], 404);
@@ -171,7 +167,7 @@ class CartController extends Controller
     public function show($id)
     {
         try {
-            $cart = Cart::with(['user', 'product', 'order'])->findOrFail($id);
+            $cart = $this->cartRepository->findById($id);
             return response()->json($cart, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Cart not found'], 404);
@@ -221,8 +217,6 @@ class CartController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $cart = Cart::findOrFail($id);
-
             $validator = Validator::make($request->all(), [
                 'quantity' => 'sometimes|integer|min:1',
                 'product_id' => 'sometimes|exists:products,product_id',
@@ -236,23 +230,7 @@ class CartController extends Controller
                 ], 422);
             }
 
-            $productId = $request->product_id ?? $cart->product_id;
-            $quantity = $request->quantity ?? $cart->quantity;
-
-            if ($request->has('quantity') || $request->has('product_id')) {
-                $product = Product::findOrFail($productId);
-                $totalPrice = $product->price * $quantity;
-                $cart->total_price = $totalPrice;
-            }
-
-            if ($request->has('quantity')) $cart->quantity = $quantity;
-            if ($request->has('product_id')) $cart->product_id = $productId;
-            if ($request->has('user_id')) $cart->user_id = $request->user_id;
-
-            $cart->save();
-
-            $cart->load(['user', 'product']);
-
+            $cart = $this->cartRepository->update($id, $request->all());
             return response()->json($cart, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Cart not found'], 404);
@@ -295,15 +273,13 @@ class CartController extends Controller
     public function destroy($id)
     {
         try {
-            $cart = Cart::with('order')->findOrFail($id);
-
-            if ($cart->order) {
+            if ($this->cartRepository->hasOrders($id)) {
                 return response()->json([
                     'message' => 'Cannot delete cart with existing orders'
                 ], 409);
             }
 
-            $cart->delete();
+            $this->cartRepository->delete($id);
             return response()->json(['message' => 'Cart deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Cart not found'], 404);
@@ -339,14 +315,11 @@ class CartController extends Controller
      */
     public function getUserCarts($userId)
     {
-        if (!\App\Models\User::where('user_id', $userId)->exists()) {
+        if (!$this->cartRepository->userExists($userId)) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $carts = Cart::with(['product'])
-                    ->where('user_id', $userId)
-                    ->get();
-
+        $carts = $this->cartRepository->getByUserId($userId);
         return response()->json($carts, 200);
     }
 }

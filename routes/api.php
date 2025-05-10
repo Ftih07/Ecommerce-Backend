@@ -25,3 +25,10 @@ Route::apiResource('reviews', ReviewController::class);
 Route::apiResource('carts', CartController::class);
 Route::apiResource('payments', PaymentController::class);
 Route::apiResource('orders', OrderController::class);
+
+// Custom routes for user carts and orders
+Route::get('users/{user_id}/carts', [CartController::class, 'getUserCarts']);
+Route::get('users/{user_id}/orders', [OrderController::class, 'getUserOrders']);
+
+// Custom route for category products
+Route::get('categories/{id}/products', [CategoryController::class, 'products']);

@@ -6,12 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Cart;
 use App\Models\Payment;
+use App\Repositories\Interfaces\OrderRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+    /**
+     * @var OrderRepositoryInterface
+     */
+    protected $orderRepository;
+
+    /**
+     * OrderController constructor.
+     *
+     * @param OrderRepositoryInterface $orderRepository
+     */
+    public function __construct(OrderRepositoryInterface $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
     /**
      * @OA\Get(
      *     path="/orders",
@@ -77,26 +92,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::with(['cart.user', 'cart.product', 'payment']);
-
-        if ($request->has('payment_id')) {
-            $query->where('payment_id', $request->payment_id);
-        }
-
-        if ($request->has('cart_id')) {
-            $query->where('cart_id', $request->cart_id);
-        }
-
-        if ($request->has('from_date')) {
-            $query->where('order_date', '>=', $request->from_date);
-        }
-
-        if ($request->has('to_date')) {
-            $query->where('order_date', '<=', $request->to_date);
-        }
-
-        $perPage = $request->per_page ?? 15;
-        $orders = $query->paginate($perPage);
+        $orders = $this->orderRepository->getAll($request);
 
         return response()->json([
             'data' => $orders->items(),
@@ -168,24 +164,13 @@ class OrderController extends Controller
         }
 
         try {
-            $cart = Cart::findOrFail($request->cart_id);
-
-            if ($cart->order) {
+            if ($this->orderRepository->cartHasOrder($request->cart_id)) {
                 return response()->json([
                     'message' => 'This cart already has an associated order'
                 ], 409);
             }
 
-            $payment = Payment::findOrFail($request->payment_id);
-
-            $order = Order::create([
-                'final_price' => $request->final_price,
-                'cart_id' => $request->cart_id,
-                'payment_id' => $request->payment_id,
-                'order_date' => $request->order_date
-            ]);
-
-            $order->load(['cart.user', 'cart.product', 'payment']);
+            $order = $this->orderRepository->create($request->all());
 
             return response()->json([
                 'message' => 'Order created successfully',
@@ -224,7 +209,7 @@ class OrderController extends Controller
     public function show($id)
     {
         try {
-            $order = Order::with(['cart.user', 'cart.product', 'payment'])->findOrFail($id);
+            $order = $this->orderRepository->findById($id);
             return response()->json($order, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Order not found'], 404);
@@ -278,8 +263,6 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $order = Order::findOrFail($id);
-
             $validator = Validator::make($request->all(), [
                 'final_price' => 'sometimes|numeric|min:0',
                 'cart_id' => 'sometimes|exists:carts,cart_id',
@@ -294,21 +277,18 @@ class OrderController extends Controller
                 ], 422);
             }
 
-            if ($request->has('cart_id') && $request->cart_id != $order->cart_id) {
-                $cartOrder = Order::where('cart_id', $request->cart_id)
-                                  ->where('order_id', '!=', $id)
-                                  ->first();
+            // Get current order to check if cart is being changed
+            $currentOrder = $this->orderRepository->findById($id);
 
-                if ($cartOrder) {
+            if ($request->has('cart_id') && $request->cart_id != $currentOrder->cart_id) {
+                if ($this->orderRepository->cartHasOrder($request->cart_id, $id)) {
                     return response()->json([
                         'message' => 'This cart already has an associated order'
                     ], 409);
                 }
             }
 
-            $order->update($request->all());
-
-            $order->load(['cart.user', 'cart.product', 'payment']);
+            $order = $this->orderRepository->update($id, $request->all());
 
             return response()->json([
                 'message' => 'Order updated successfully',
@@ -349,8 +329,7 @@ class OrderController extends Controller
     public function destroy($id)
     {
         try {
-            $order = Order::findOrFail($id);
-            $order->delete();
+            $this->orderRepository->delete($id);
             return response()->json(['message' => 'Order deleted successfully'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Order not found'], 404);
@@ -384,18 +363,11 @@ class OrderController extends Controller
     public function getUserOrders($userId)
     {
         // Check if user exists
-        if (!\App\Models\User::where('user_id', $userId)->exists()) {
+        if (!$this->orderRepository->userExists($userId)) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        // Find carts belonging to this user
-        $cartIds = Cart::where('user_id', $userId)->pluck('cart_id');
-
-        // Find orders for these carts
-        $orders = Order::with(['cart.user', 'cart.product', 'payment'])
-                      ->whereIn('cart_id', $cartIds)
-                      ->get();
-
+        $orders = $this->orderRepository->getByUserId($userId);
         return response()->json($orders, 200);
     }
 }
