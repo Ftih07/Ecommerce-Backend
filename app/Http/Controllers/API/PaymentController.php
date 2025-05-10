@@ -4,11 +4,26 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use App\Repositories\Interfaces\PaymentRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PaymentController extends Controller
 {
+    /**
+     * @var PaymentRepositoryInterface
+     */
+    protected $paymentRepository;
+
+    /**
+     * PaymentController constructor.
+     *
+     * @param PaymentRepositoryInterface $paymentRepository
+     */
+    public function __construct(PaymentRepositoryInterface $paymentRepository)
+    {
+        $this->paymentRepository = $paymentRepository;
+    }
     /**
      * @OA\Get(
      *     path="/payments",
@@ -25,7 +40,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        return response()->json(Payment::all(), 200);
+        return response()->json($this->paymentRepository->getAll(), 200);
     }
 
     /**
@@ -65,7 +80,7 @@ class PaymentController extends Controller
             'status' => 'required|in:pending,paid,failed',
         ]);
 
-        $payment = Payment::create($request->all());
+        $payment = $this->paymentRepository->create($request->all());
         return response()->json($payment, 201);
     }
 
@@ -99,7 +114,7 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        $payment = Payment::find($id);
+        $payment = $this->paymentRepository->findById($id);
         if (!$payment) {
             return response()->json(['message' => 'Payment not found'], 404);
         }
@@ -151,7 +166,7 @@ class PaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $payment = Payment::find($id);
+        $payment = $this->paymentRepository->findById($id);
         if (!$payment) {
             return response()->json(['message' => 'Payment not found'], 404);
         }
@@ -161,8 +176,8 @@ class PaymentController extends Controller
             'status' => 'sometimes|in:pending,paid,failed',
         ]);
 
-        $payment->update($request->all());
-        return response()->json($payment, 200);
+        $updatedPayment = $this->paymentRepository->update($id, $request->all());
+        return response()->json($updatedPayment, 200);
     }
 
     /**
@@ -205,15 +220,13 @@ class PaymentController extends Controller
     public function destroy($id)
     {
         try {
-            $payment = Payment::with('order')->findOrFail($id);
-
-            if ($payment->order) {
+            if ($this->paymentRepository->hasOrders($id)) {
                 return response()->json([
                     'message' => 'Cannot delete payment with associated orders'
                 ], 409);
             }
 
-            $payment->delete();
+            $this->paymentRepository->delete($id);
             return response()->json(['message' => 'Payment deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Payment not found'], 404);

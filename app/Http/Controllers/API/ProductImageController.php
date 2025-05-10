@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\Interfaces\ProductImageRepositoryInterface;
 
 /**
  * @OA\Tag(
@@ -14,6 +15,20 @@ use App\Http\Controllers\Controller;
 
 class ProductImageController extends Controller
 {
+    /**
+     * @var \App\Repositories\Interfaces\ProductImageRepositoryInterface
+     */
+    protected $productImageRepository;
+
+    /**
+     * ProductImageController constructor.
+     *
+     * @param \App\Repositories\Interfaces\ProductImageRepositoryInterface $productImageRepository
+     */
+    public function __construct(ProductImageRepositoryInterface $productImageRepository)
+    {
+        $this->productImageRepository = $productImageRepository;
+    }
     /**
  * @OA\Get(
  *     path="/product-images",
@@ -29,7 +44,8 @@ class ProductImageController extends Controller
 
     public function index()
     {
-        return response()->json(ProductImage::all(), 200);
+        $productImages = $this->productImageRepository->getAll();
+        return response()->json($productImages, 200);
     }
 /**
  * @OA\Post(
@@ -65,7 +81,7 @@ class ProductImageController extends Controller
             'path' => 'string',
         ]);
 
-        $image = ProductImage::create($request->all());
+        $image = $this->productImageRepository->create($request->all());
         return response()->json($image, 201);
     }
 /**
@@ -94,7 +110,7 @@ class ProductImageController extends Controller
 
     public function show($id)
     {
-        $image = ProductImage::find($id);
+        $image = $this->productImageRepository->findById($id);
         if (!$image) {
             return response()->json(['message' => 'ProductImage not found'], 404);
         }
@@ -134,18 +150,17 @@ class ProductImageController extends Controller
 
     public function update(Request $request, $id)
     {
-        $image = ProductImage::find($id);
-        if (!$image) {
-            return response()->json(['message' => 'ProductImage not found'], 404);
-        }
-
         $request->validate([
             'name' => 'string',
             'product_id' => 'exists:products,product_id',
             'path' => 'string',
         ]);
 
-        $image->update($request->all());
+        $image = $this->productImageRepository->update($id, $request->all());
+        if (!$image) {
+            return response()->json(['message' => 'ProductImage not found'], 404);
+        }
+
         return response()->json($image, 200);
     }
 /**
@@ -176,11 +191,35 @@ class ProductImageController extends Controller
 
     public function destroy($id)
     {
-        $image = ProductImage::find($id);
-        if (!$image) {
+        $deleted = $this->productImageRepository->delete($id);
+        if (!$deleted) {
             return response()->json(['message' => 'ProductImage not found'], 404);
         }
-        $image->delete();
         return response()->json(['message' => 'ProductImage deleted'], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/products/{product_id}/images",
+     *     summary="Get all images for a specific product",
+     *     tags={"Product Images"},
+     *     @OA\Parameter(
+     *         name="product_id",
+     *         in="path",
+     *         required=true,
+     *         description="Product ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of product images",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/ProductImage"))
+     *     )
+     * )
+     */
+    public function getProductImages($productId)
+    {
+        $images = $this->productImageRepository->getByProductId($productId);
+        return response()->json($images, 200);
     }
 }

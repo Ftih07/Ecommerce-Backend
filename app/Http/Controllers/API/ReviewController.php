@@ -5,9 +5,24 @@ namespace App\Http\Controllers\API;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\Interfaces\ReviewRepositoryInterface;
 
 class ReviewController extends Controller
 {
+    /**
+     * @var \App\Repositories\Interfaces\ReviewRepositoryInterface
+     */
+    protected $reviewRepository;
+
+    /**
+     * ReviewController constructor.
+     *
+     * @param \App\Repositories\Interfaces\ReviewRepositoryInterface $reviewRepository
+     */
+    public function __construct(ReviewRepositoryInterface $reviewRepository)
+    {
+        $this->reviewRepository = $reviewRepository;
+    }
     /**
      * @OA\Get(
      *     path="/reviews",
@@ -25,11 +40,11 @@ class ReviewController extends Controller
      *         description="Terjadi kesalahan server"
      *     )
      * )
-     */ 
+     */
     // GET /reviews
     public function index()
     {
-        $reviews = Review::with(['user', 'product'])->get();
+        $reviews = $this->reviewRepository->getAllWithRelations();
         return response()->json($reviews, 200);
     }
 
@@ -78,7 +93,7 @@ class ReviewController extends Controller
             'review' => 'nullable|string',
         ]);
 
-        $review = Review::create($request->all());
+        $review = $this->reviewRepository->create($request->all());
 
         return response()->json([
             'message' => 'Review created successfully',
@@ -118,7 +133,10 @@ class ReviewController extends Controller
     // GET /reviews/{id}
     public function show($id)
     {
-        $review = Review::with(['user', 'product'])->findOrFail($id);
+        $review = $this->reviewRepository->findByIdWithRelations($id);
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
         return response()->json($review, 200);
     }
 
@@ -166,8 +184,6 @@ class ReviewController extends Controller
     // PUT/PATCH /reviews/{id}
     public function update(Request $request, $id)
     {
-        $review = Review::findOrFail($id);
-
         $request->validate([
             'user_id' => 'sometimes|exists:users,user_id',
             'product_id' => 'sometimes|exists:products,product_id',
@@ -175,7 +191,11 @@ class ReviewController extends Controller
             'review' => 'sometimes|string',
         ]);
 
-        $review->update($request->all());
+        $review = $this->reviewRepository->update($id, $request->all());
+
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
 
         return response()->json([
             'message' => 'Review updated successfully',
@@ -217,9 +237,74 @@ class ReviewController extends Controller
     // DELETE /reviews/{id}
     public function destroy($id)
     {
-        $review = Review::findOrFail($id);
-        $review->delete();
+        $deleted = $this->reviewRepository->delete($id);
+
+        if (!$deleted) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
 
         return response()->json(['message' => 'Review deleted successfully'], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/products/{product_id}/reviews",
+     *     summary="Get reviews for a specific product",
+     *     description="Mengambil semua review untuk produk tertentu",
+     *     operationId="getProductReviews",
+     *     tags={"Reviews"},
+     *     @OA\Parameter(
+     *         name="product_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID produk",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil mengambil data review",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Review"))
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Terjadi kesalahan server"
+     *     )
+     * )
+     */
+    public function getProductReviews($productId)
+    {
+        $reviews = $this->reviewRepository->getByProductId($productId);
+        return response()->json($reviews, 200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/users/{user_id}/reviews",
+     *     summary="Get reviews by a specific user",
+     *     description="Mengambil semua review yang dibuat oleh user tertentu",
+     *     operationId="getUserReviews",
+     *     tags={"Reviews"},
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID user",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil mengambil data review",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Review"))
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Terjadi kesalahan server"
+     *     )
+     * )
+     */
+    public function getUserReviews($userId)
+    {
+        $reviews = $this->reviewRepository->getByUserId($userId);
+        return response()->json($reviews, 200);
     }
 }

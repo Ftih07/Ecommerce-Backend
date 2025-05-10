@@ -5,9 +5,24 @@ namespace App\Http\Controllers\API;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 
 class ProductController extends Controller
 {
+    /**
+     * @var \App\Repositories\Interfaces\ProductRepositoryInterface
+     */
+    protected $productRepository;
+
+    /**
+     * ProductController constructor.
+     *
+     * @param \App\Repositories\Interfaces\ProductRepositoryInterface $productRepository
+     */
+    public function __construct(ProductRepositoryInterface $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
 
     /**
  * @OA\Get(
@@ -24,10 +39,9 @@ class ProductController extends Controller
 
     public function index()
     {
-        // Contoh: load store & category juga
-        $products = Product::with(['store', 'category'])->get();
+        $products = $this->productRepository->getAllWithRelations();
         return response()->json($products, 200);
-    } 
+    }
 
     /**
  * @OA\Post(
@@ -73,7 +87,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,category_id',
         ]);
 
-        $product = Product::create($request->all());
+        $product = $this->productRepository->create($request->all());
         return response()->json($product, 201);
     }
 
@@ -103,9 +117,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        // Contoh: load relasi
-        $product = Product::with(['store', 'category', 'reviews', 'productImages'])
-                          ->find($id);
+        $product = $this->productRepository->findByIdWithRelations($id);
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
@@ -151,11 +163,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $product = Product::find($id);
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-
         $request->validate([
             'stock' => 'integer',
             'status' => 'in:active,inactive',
@@ -164,7 +171,11 @@ class ProductController extends Controller
             'category_id' => 'exists:categories,category_id',
         ]);
 
-        $product->update($request->all());
+        $product = $this->productRepository->update($id, $request->all());
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
         return response()->json($product, 200);
     }
 
@@ -196,11 +207,39 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = Product::find($id);
-        if (!$product) {
+        $deleted = $this->productRepository->delete($id);
+        if (!$deleted) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-        $product->delete();
         return response()->json(['message' => 'Product deleted'], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/stores/{store_id}/products",
+     *     summary="Get all products for a specific store",
+     *     tags={"Products"},
+     *     @OA\Parameter(
+     *         name="store_id",
+     *         in="path",
+     *         required=true,
+     *         description="Store ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response with list of products",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Product"))
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Store not found"
+     *     )
+     * )
+     */
+    public function getStoreProducts($storeId)
+    {
+        $products = $this->productRepository->getByStoreId($storeId);
+        return response()->json($products, 200);
     }
 }

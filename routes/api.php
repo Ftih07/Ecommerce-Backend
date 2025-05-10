@@ -32,3 +32,13 @@ Route::get('users/{user_id}/orders', [OrderController::class, 'getUserOrders']);
 
 // Custom route for category products
 Route::get('categories/{id}/products', [CategoryController::class, 'products']);
+
+// Custom route for store products
+Route::get('stores/{store_id}/products', [ProductController::class, 'getStoreProducts']);
+
+// Custom route for product images
+Route::get('products/{product_id}/images', [ProductImageController::class, 'getProductImages']);
+
+// Custom route for product reviews and user reviews
+Route::get('products/{product_id}/reviews', [ReviewController::class, 'getProductReviews']);
+Route::get('users/{user_id}/reviews', [ReviewController::class, 'getUserReviews']);
