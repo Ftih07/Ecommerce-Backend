@@ -3,11 +3,26 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Store;
+use App\Repositories\Interfaces\StoreRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class StoreController extends Controller
 {
+    /**
+     * @var StoreRepositoryInterface
+     */
+    protected $storeRepository;
+
+    /**
+     * StoreController constructor.
+     *
+     * @param StoreRepositoryInterface $storeRepository
+     */
+    public function __construct(StoreRepositoryInterface $storeRepository)
+    {
+        $this->storeRepository = $storeRepository;
+    }
     /**
      * @OA\Get(
      *     path="/stores",
@@ -23,9 +38,13 @@ class StoreController extends Controller
      * )
      */
     // GET /stores
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Store::all(), 200);
+        $stores = $request->has(['per_page', 'page', 'sort_by', 'sort_order', 'name', 'city'])
+            ? $this->storeRepository->getAll($request)
+            : $this->storeRepository->getAllStores();
+
+        return response()->json($stores, 200);
     }
 
     /**
@@ -64,7 +83,7 @@ class StoreController extends Controller
             'profile_image' => 'nullable|string',
         ]);
 
-        $store = Store::create($request->all());
+        $store = $this->storeRepository->create($request->all());
         return response()->json($store, 201);
     }
 
@@ -97,7 +116,7 @@ class StoreController extends Controller
 
     public function show($id)
     {
-        $store = Store::find($id);
+        $store = $this->storeRepository->findById($id);
         if (!$store) {
             return response()->json(['message' => 'Store not found'], 404);
         }
@@ -140,12 +159,18 @@ class StoreController extends Controller
 
     public function update(Request $request, $id)
     {
-        $store = Store::find($id);
+        $request->validate([
+            'name' => 'sometimes|string',
+            'city' => 'sometimes|string',
+            'profile_image' => 'nullable|string',
+        ]);
+
+        $store = $this->storeRepository->update($id, $request->all());
+
         if (!$store) {
             return response()->json(['message' => 'Store not found'], 404);
         }
 
-        $store->update($request->all());
         return response()->json($store, 200);
     }
 
@@ -179,11 +204,134 @@ class StoreController extends Controller
 
     public function destroy($id)
     {
-        $store = Store::find($id);
+        $result = $this->storeRepository->delete($id);
+
+        if (!$result) {
+            return response()->json(['message' => 'Store not found'], 404);
+        }
+
+        return response()->json(['message' => 'Store deleted'], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/stores/{id}/products",
+     *     summary="Get store with its products",
+     *     description="Mengambil data toko beserta produk-produknya",
+     *     operationId="getStoreWithProducts",
+     *     tags={"Stores"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID toko",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil mengambil data toko beserta produknya",
+     *         @OA\JsonContent(ref="#/components/schemas/Store")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Toko tidak ditemukan"
+     *     )
+     * )
+     */
+    public function getStoreWithProducts($id)
+    {
+        $store = $this->storeRepository->findByIdWithProducts($id);
+
         if (!$store) {
             return response()->json(['message' => 'Store not found'], 404);
         }
-        $store->delete();
-        return response()->json(['message' => 'Store deleted'], 200);
+
+        return response()->json($store, 200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/stores/search",
+     *     summary="Search stores by name",
+     *     description="Mencari toko berdasarkan nama",
+     *     operationId="searchStoresByName",
+     *     tags={"Stores"},
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         required=true,
+     *         description="Nama toko yang ingin dicari",
+     *         @OA\Schema(type="string", example="Elektronik")
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         required=false,
+     *         description="Jumlah data per halaman",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=false,
+     *         description="Halaman yang ingin ditampilkan",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil mencari toko",
+     *         @OA\JsonContent(type="object")
+     *     )
+     * )
+     */
+    public function search(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+        ]);
+
+        $stores = $this->storeRepository->searchByName($request->name, $request);
+        return response()->json($stores, 200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/stores/city/{city}",
+     *     summary="Get stores by city",
+     *     description="Mengambil data toko berdasarkan kota",
+     *     operationId="getStoresByCity",
+     *     tags={"Stores"},
+     *     @OA\Parameter(
+     *         name="city",
+     *         in="path",
+     *         required=true,
+     *         description="Nama kota",
+     *         @OA\Schema(type="string", example="Bandung")
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         required=false,
+     *         description="Jumlah data per halaman",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=false,
+     *         description="Halaman yang ingin ditampilkan",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil mengambil data toko berdasarkan kota",
+     *         @OA\JsonContent(type="object")
+     *     )
+     * )
+     */
+    public function getByCity($city, Request $request)
+    {
+        $stores = $this->storeRepository->getByCity($city, $request);
+        return response()->json($stores, 200);
     }
 }
