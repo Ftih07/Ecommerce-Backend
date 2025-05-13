@@ -1132,7 +1132,8 @@
                     "Payments"
                 ],
                 "summary": "Get all payments",
-                "operationId": "e07c35407a995e6fbcc6159beb123d01",
+                "description": "Retrieve a list of all payment records",
+                "operationId": "getPayments",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1154,7 +1155,12 @@
                     "Payments"
                 ],
                 "summary": "Create a new payment",
+<<<<<<< HEAD
                 "operationId": "0c3902cc46fc236adc6a3ecc698c0107",
+=======
+                "description": "Create a new payment record",
+                "operationId": "createPayment",
+>>>>>>> 34b948191cd86bb65db91239b94e829b9c6f3349
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1166,7 +1172,8 @@
                                 ],
                                 "properties": {
                                     "payment_method": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Credit Card"
                                     },
                                     "status": {
                                         "type": "string",
@@ -1174,7 +1181,8 @@
                                             "pending",
                                             "paid",
                                             "failed"
-                                        ]
+                                        ],
+                                        "example": "pending"
                                     }
                                 },
                                 "type": "object"
@@ -1194,7 +1202,22 @@
                         }
                     },
                     "422": {
-                        "description": "Validation error"
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1205,14 +1228,21 @@
                     "Payments"
                 ],
                 "summary": "Get a payment by ID",
+<<<<<<< HEAD
                 "operationId": "cdbf6031f2c22d03b11b79ee72d8a105",
+=======
+                "description": "Retrieve specific payment details by ID",
+                "operationId": "getPaymentById",
+>>>>>>> 34b948191cd86bb65db91239b94e829b9c6f3349
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "Payment ID",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
@@ -1228,7 +1258,20 @@
                         }
                     },
                     "404": {
-                        "description": "Payment not found"
+                        "description": "Payment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Payment not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -1237,14 +1280,21 @@
                     "Payments"
                 ],
                 "summary": "Update a payment",
+<<<<<<< HEAD
                 "operationId": "42c3098b93370d26e1b4c39871b73a5c",
+=======
+                "description": "Update an existing payment record",
+                "operationId": "updatePayment",
+>>>>>>> 34b948191cd86bb65db91239b94e829b9c6f3349
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "Payment ID",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
@@ -1255,7 +1305,8 @@
                             "schema": {
                                 "properties": {
                                     "payment_method": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "PayPal"
                                     },
                                     "status": {
                                         "type": "string",
@@ -1263,7 +1314,8 @@
                                             "pending",
                                             "paid",
                                             "failed"
-                                        ]
+                                        ],
+                                        "example": "paid"
                                     }
                                 },
                                 "type": "object"
@@ -1283,7 +1335,38 @@
                         }
                     },
                     "404": {
-                        "description": "Payment not found"
+                        "description": "Payment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Payment not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -1292,23 +1375,72 @@
                     "Payments"
                 ],
                 "summary": "Delete a payment",
+<<<<<<< HEAD
                 "operationId": "cffc35edfbe3085457111971a77f2454",
+=======
+                "description": "Delete an existing payment record",
+                "operationId": "deletePayment",
+>>>>>>> 34b948191cd86bb65db91239b94e829b9c6f3349
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "Payment ID",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Payment deleted"
+                        "description": "Payment deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Payment deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Payment not found"
+                        "description": "Payment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Payment not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Cannot delete payment with associated orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cannot delete payment with associated orders"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Category;
+use App\Repositories\Interfaces\CategoryRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -10,6 +11,20 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryController extends Controller
 {
+    /**
+     * @var CategoryRepositoryInterface
+     */
+    protected $categoryRepository;
+
+    /**
+     * CategoryController constructor.
+     *
+     * @param CategoryRepositoryInterface $categoryRepository
+     */
+    public function __construct(CategoryRepositoryInterface $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
     /**
      * @OA\Get(
      *     path="/categories",
@@ -55,14 +70,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Category::query();
-
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
-
-        $perPage = $request->per_page ?? 15;
-        $categories = $query->paginate($perPage);
+        $categories = $this->categoryRepository->getAll($request);
 
         return response()->json([
             'data' => $categories->items(),
@@ -117,7 +125,7 @@ class CategoryController extends Controller
             ], 422);
         }
 
-        $category = Category::create($request->all());
+        $category = $this->categoryRepository->create($request->all());
         return response()->json($category, 201);
     }
 
@@ -167,13 +175,8 @@ class CategoryController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $query = Category::query();
-
-            if ($request->with_products) {
-                $query->with('products');
-            }
-
-            $category = $query->findOrFail($id);
+            $withProducts = $request->has('with_products') && $request->with_products;
+            $category = $this->categoryRepository->findById($id, $withProducts);
             return response()->json($category, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Category not found'], 404);
@@ -222,8 +225,6 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $category = Category::findOrFail($id);
-
             $validator = Validator::make($request->all(), [
                 'name' => 'sometimes|required|string|max:255|unique:categories,name,' . $id . ',category_id',
             ]);
@@ -235,7 +236,7 @@ class CategoryController extends Controller
                 ], 422);
             }
 
-            $category->update($request->all());
+            $category = $this->categoryRepository->update($id, $request->all());
             return response()->json($category, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Category not found'], 404);
@@ -276,15 +277,13 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         try {
-            $category = Category::findOrFail($id);
-
-            if ($category->products()->count() > 0) {
+            if ($this->categoryRepository->hasProducts($id)) {
                 return response()->json([
                     'message' => 'Cannot delete category that has products. Remove products first or reassign them.'
                 ], 409);
             }
 
-            $category->delete();
+            $this->categoryRepository->delete($id);
             return response()->json(['message' => 'Category deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Category not found'], 404);
@@ -319,9 +318,7 @@ class CategoryController extends Controller
     public function products($id)
     {
         try {
-            $category = Category::findOrFail($id);
-            $products = $category->products;
-
+            $products = $this->categoryRepository->getProductsByCategory($id);
             return response()->json($products, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Category not found'], 404);

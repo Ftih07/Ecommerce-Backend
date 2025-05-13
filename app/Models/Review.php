@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @OA\Schema(
@@ -23,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  *         property="user",
  *         ref="#/components/schemas/User",
  *         nullable=true
- *     ), 
+ *     ),
  *     @OA\Property(
  *         property="product",
  *         ref="#/components/schemas/Product",
@@ -34,15 +35,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $primaryKey = 'review_id';
+
     protected $fillable = [
         'user_id',
         'product_id',
         'rating',
         'review'
-    ]; 
+    ];
+
+    protected $casts = [
+        'rating' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime'
+    ];
 
     public function user()
     {
