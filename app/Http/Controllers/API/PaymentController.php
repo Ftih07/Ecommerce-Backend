@@ -26,7 +26,7 @@ class PaymentController extends Controller
     }
     /**
      * @OA\Post(
-     *     path="/api/payments",
+     *     path="/payments",
      *     summary="Create a new payment",
      *     tags={"Payments"},
      *     @OA\RequestBody(
@@ -60,7 +60,7 @@ class PaymentController extends Controller
     }
     /**
      * @OA\Get(
-     *     path="/api/payments/{id}",
+     *     path="/payments/{id}",
      *     summary="Get a payment by ID",
      *     tags={"Payments"},
      *     @OA\Parameter(
@@ -90,7 +90,7 @@ class PaymentController extends Controller
     }
     /**
      * @OA\Put(
-     *     path="/api/payments/{id}",
+     *     path="/payments/{id}",
      *     summary="Update a payment",
      *     tags={"Payments"},
      *     @OA\Parameter(
@@ -134,7 +134,7 @@ class PaymentController extends Controller
     }
     /**
      * @OA\Delete(
-     *     path="/api/payments/{id}",
+     *     path="/payments/{id}",
      *     summary="Delete a payment",
      *     tags={"Payments"},
      *     @OA\Parameter(

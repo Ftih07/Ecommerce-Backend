@@ -1148,15 +1148,13 @@
                         }
                     }
                 }
-            }
-        },
-        "/api/payments": {
+            },
             "post": {
                 "tags": [
                     "Payments"
                 ],
                 "summary": "Create a new payment",
-                "operationId": "6b47fbea138d1f528831ed3e92ee46fd",
+                "operationId": "0c3902cc46fc236adc6a3ecc698c0107",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1201,13 +1199,13 @@
                 }
             }
         },
-        "/api/payments/{id}": {
+        "/payments/{id}": {
             "get": {
                 "tags": [
                     "Payments"
                 ],
                 "summary": "Get a payment by ID",
-                "operationId": "055c1b4080a8c5b59d53aa69a505abf5",
+                "operationId": "cdbf6031f2c22d03b11b79ee72d8a105",
                 "parameters": [
                     {
                         "name": "id",
@@ -1239,7 +1237,7 @@
                     "Payments"
                 ],
                 "summary": "Update a payment",
-                "operationId": "256d3cd03413b7fd8f82cf4491f08847",
+                "operationId": "42c3098b93370d26e1b4c39871b73a5c",
                 "parameters": [
                     {
                         "name": "id",
@@ -1294,7 +1292,7 @@
                     "Payments"
                 ],
                 "summary": "Delete a payment",
-                "operationId": "fd511b89a9c38f94cb4d1e5a35fe9f40",
+                "operationId": "cffc35edfbe3085457111971a77f2454",
                 "parameters": [
                     {
                         "name": "id",
@@ -2960,9 +2958,6 @@
     },
     "tags": [
         {
-            "name": "Products"
-        },
-        {
             "name": "Product Images"
         },
         {
@@ -2980,6 +2975,10 @@
         {
             "name": "Payments",
             "description": "Payments"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
         },
         {
             "name": "Reviews",
