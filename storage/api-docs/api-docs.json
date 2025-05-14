@@ -1155,12 +1155,8 @@
                     "Payments"
                 ],
                 "summary": "Create a new payment",
-<<<<<<< HEAD
-                "operationId": "0c3902cc46fc236adc6a3ecc698c0107",
-=======
                 "description": "Create a new payment record",
                 "operationId": "createPayment",
->>>>>>> 34b948191cd86bb65db91239b94e829b9c6f3349
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1228,12 +1224,8 @@
                     "Payments"
                 ],
                 "summary": "Get a payment by ID",
-<<<<<<< HEAD
-                "operationId": "cdbf6031f2c22d03b11b79ee72d8a105",
-=======
                 "description": "Retrieve specific payment details by ID",
                 "operationId": "getPaymentById",
->>>>>>> 34b948191cd86bb65db91239b94e829b9c6f3349
                 "parameters": [
                     {
                         "name": "id",
@@ -1280,12 +1272,8 @@
                     "Payments"
                 ],
                 "summary": "Update a payment",
-<<<<<<< HEAD
-                "operationId": "42c3098b93370d26e1b4c39871b73a5c",
-=======
                 "description": "Update an existing payment record",
                 "operationId": "updatePayment",
->>>>>>> 34b948191cd86bb65db91239b94e829b9c6f3349
                 "parameters": [
                     {
                         "name": "id",
@@ -1375,12 +1363,8 @@
                     "Payments"
                 ],
                 "summary": "Delete a payment",
-<<<<<<< HEAD
-                "operationId": "cffc35edfbe3085457111971a77f2454",
-=======
                 "description": "Delete an existing payment record",
                 "operationId": "deletePayment",
->>>>>>> 34b948191cd86bb65db91239b94e829b9c6f3349
                 "parameters": [
                     {
                         "name": "id",
@@ -1704,6 +1688,44 @@
                 }
             }
         },
+        "/stores/{store_id}/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get all products for a specific store",
+                "operationId": "aa4f34a732143f2379babab37e868fe2",
+                "parameters": [
+                    {
+                        "name": "store_id",
+                        "in": "path",
+                        "description": "Store ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with list of products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Store not found"
+                    }
+                }
+            }
+        },
         "/product-images": {
             "get": {
                 "tags": [
@@ -1910,24 +1932,186 @@
                 }
             }
         },
+        "/products/{product_id}/images": {
+            "get": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Get all images for a specific product",
+                "operationId": "4e638494c76c102876a1608922684eb4",
+                "parameters": [
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of product images",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductImage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/reviews": {
             "get": {
                 "tags": [
                     "Reviews"
                 ],
                 "summary": "Get all reviews",
-                "description": "Mengambil semua review beserta data user dan produk terkait",
+                "description": "Mengambil semua review beserta data user dan produk terkait dengan pagination dan filtering",
                 "operationId": "getReviews",
+                "parameters": [
+                    {
+                        "name": "rating",
+                        "in": "query",
+                        "description": "Filter by rating (1-5)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 5,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "from_date",
+                        "in": "query",
+                        "description": "Filter reviews from this date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to_date",
+                        "in": "query",
+                        "description": "Filter reviews until this date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Field to sort by",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "rating"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Sort direction",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Berhasil mengambil data review",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Review"
-                                    }
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Review"
+                                            }
+                                        },
+                                        "first_page_url": {
+                                            "type": "string"
+                                        },
+                                        "from": {
+                                            "type": "integer"
+                                        },
+                                        "last_page": {
+                                            "type": "integer"
+                                        },
+                                        "last_page_url": {
+                                            "type": "string"
+                                        },
+                                        "links": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "url": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "label": {
+                                                        "type": "string"
+                                                    },
+                                                    "active": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "next_page_url": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "per_page": {
+                                            "type": "integer"
+                                        },
+                                        "prev_page_url": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "to": {
+                                            "type": "integer"
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -2000,6 +2184,9 @@
                     "400": {
                         "description": "Request tidak valid"
                     },
+                    "409": {
+                        "description": "User already reviewed this product"
+                    },
                     "500": {
                         "description": "Terjadi kesalahan server"
                     }
@@ -2070,14 +2257,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "user_id": {
-                                        "type": "integer",
-                                        "example": 2
-                                    },
-                                    "product_id": {
-                                        "type": "integer",
-                                        "example": 4
-                                    },
                                     "rating": {
                                         "type": "integer",
                                         "example": 5
@@ -2114,6 +2293,9 @@
                     },
                     "404": {
                         "description": "Review tidak ditemukan"
+                    },
+                    "400": {
+                        "description": "Request tidak valid"
                     },
                     "500": {
                         "description": "Terjadi kesalahan server"
@@ -2158,6 +2340,126 @@
                     },
                     "404": {
                         "description": "Review tidak ditemukan"
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan server"
+                    }
+                }
+            }
+        },
+        "/products/{product_id}/reviews": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Get reviews for a specific product",
+                "description": "Mengambil semua review untuk produk tertentu",
+                "operationId": "getProductReviews",
+                "parameters": [
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "description": "ID produk",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data review",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Review"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan server"
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/reviews": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Get reviews by a specific user",
+                "description": "Mengambil semua review yang dibuat oleh user tertentu",
+                "operationId": "getUserReviews",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "rating",
+                        "in": "query",
+                        "description": "Filter by rating (1-5)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 5,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Field to sort by",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "rating"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Sort direction",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data review",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Review"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
                     },
                     "500": {
                         "description": "Terjadi kesalahan server"
@@ -2376,6 +2678,151 @@
                     },
                     "404": {
                         "description": "Toko tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/stores/{id}/products": {
+            "get": {
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "Get store with its products",
+                "description": "Mengambil data toko beserta produk-produknya",
+                "operationId": "getStoreWithProducts",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID toko",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data toko beserta produknya",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Store"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Toko tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/stores/search": {
+            "get": {
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "Search stores by name",
+                "description": "Mencari toko berdasarkan nama",
+                "operationId": "searchStoresByName",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Nama toko yang ingin dicari",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Elektronik"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Jumlah data per halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman yang ingin ditampilkan",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mencari toko",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stores/city/{city}": {
+            "get": {
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "Get stores by city",
+                "description": "Mengambil data toko berdasarkan kota",
+                "operationId": "getStoresByCity",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "description": "Nama kota",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Bandung"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Jumlah data per halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman yang ingin ditampilkan",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data toko berdasarkan kota",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2629,6 +3076,184 @@
                     },
                     "404": {
                         "description": "User tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/users/search/name/{name}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Search users by name",
+                "description": "Search for users whose name contains the given string",
+                "operationId": "searchUsersByName",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Name to search for",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of results per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/search/email/{email}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Search users by email",
+                "description": "Search for users whose email contains the given string",
+                "operationId": "searchUsersByEmail",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "Email to search for",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of results per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/with-reviews": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get a user with their reviews",
+                "description": "Retrieves user data along with all reviews they've written",
+                "operationId": "getUserWithReviews",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User with reviews",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/users/{id}/with-carts": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get a user with their shopping carts",
+                "description": "Retrieves user data along with all their shopping carts",
+                "operationId": "getUserWithCarts",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User with carts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
                     }
                 }
             }
