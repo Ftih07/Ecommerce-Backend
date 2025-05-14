@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable; 
-use Illuminate\Database\Eloquent\Model; 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @OA\Schema(
@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory;
 
     protected $primaryKey = 'user_id';
     protected $fillable = [
@@ -38,7 +38,8 @@ class User extends Authenticatable
     ];
 
     protected $hidden = [
-        'password', 
+        'password',
+        'remember_token',
     ];
 
     protected function password(): Attribute
@@ -56,5 +57,39 @@ class User extends Authenticatable
     public function carts()
     {
         return $this->hasMany(Cart::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Get the roles that belong to the user.
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
+    }
+
+    /**
+     * Check if user has a specific role
+     *
+     * @param string|array $roles
+     * @return bool
+     */
+    public function hasRole($roles)
+    {
+        if (is_string($roles)) {
+            return $this->roles->contains('name', $roles);
+        }
+
+        return (bool) $this->roles->whereIn('name', $roles)->count();
+    }
+
+    /**
+     * Check if user has any role
+     *
+     * @param array $roles
+     * @return bool
+     */
+    public function hasAnyRole($roles)
+    {
+        return (bool) $this->roles->whereIn('name', $roles)->count();
     }
 }

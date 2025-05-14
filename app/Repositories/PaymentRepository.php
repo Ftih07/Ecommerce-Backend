@@ -100,14 +100,18 @@ class PaymentRepository implements PaymentRepositoryInterface
     }
 
     /**
-     * Check if a payment has associated orders
+     * Check if the payment has associated orders
      *
      * @param int $paymentId
      * @return bool
      */
     public function hasOrders(int $paymentId): bool
     {
-        $payment = $this->payment->with('order')->find($paymentId);
-        return $payment && $payment->order !== null;
+        $payment = $this->findById($paymentId);
+        if (!$payment) {
+            return false;
+        }
+
+        return $payment->order()->exists();
     }
 }

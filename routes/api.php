@@ -11,28 +11,59 @@ use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\AuthController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Authentication Routes - Temporarily disabled rate limiting for testing
+// Route::middleware(['auth.rate_limit'])->group(function () {
+    Route::post('auth/register', [AuthController::class, 'register']);
+    Route::post('auth/login', [AuthController::class, 'login']);
+// });
 
-Route::apiResource('users', UserController::class);
-Route::apiResource('stores', StoreController::class);
-Route::apiResource('categories', CategoryController::class);
-Route::apiResource('products', ProductController::class);
-Route::apiResource('product-images', ProductImageController::class);
-Route::apiResource('reviews', ReviewController::class);
-Route::apiResource('carts', CartController::class);
-Route::apiResource('payments', PaymentController::class);
-Route::apiResource('orders', OrderController::class);
+// Protected auth routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('auth/logout', [AuthController::class, 'logout']);
+    Route::get('auth/user', [AuthController::class, 'user']);
+    Route::post('auth/refresh', [AuthController::class, 'refresh']);
+    Route::get('auth/check', [AuthController::class, 'check']);
+    Route::get('auth/roles', [AuthController::class, 'roles']);
+});
 
-// Custom routes for user carts and orders
-Route::get('users/{user_id}/carts', [CartController::class, 'getUserCarts']);
-Route::get('users/{user_id}/orders', [OrderController::class, 'getUserOrders']);
-Route::get('users/search/name/{name}', [UserController::class, 'searchByName']);
-Route::get('users/search/email/{email}', [UserController::class, 'searchByEmail']);
-Route::get('users/{id}/with-reviews', [UserController::class, 'getUserWithReviews']);
-Route::get('users/{id}/with-carts', [UserController::class, 'getUserWithCarts']);
+// Public routes - products, categories, stores can be browsed without authentication
+Route::apiResource('stores', StoreController::class)->only(['index', 'show']);
+Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
+Route::apiResource('products', ProductController::class)->only(['index', 'show']);
+Route::apiResource('product-images', ProductImageController::class)->only(['index', 'show']);
+Route::apiResource('reviews', ReviewController::class)->only(['index', 'show']);
+
+// Protected routes
+Route::middleware('auth:sanctum')->group(function () {
+    // Customer resources - accessible by customers and admins
+    Route::middleware(['role:customer,admin'])->group(function() {
+        Route::apiResource('carts', CartController::class);
+        Route::apiResource('orders', OrderController::class);
+        Route::apiResource('payments', PaymentController::class);
+    });
+
+    // Admin only resources
+    Route::middleware(['role:admin'])->group(function() {
+        Route::apiResource('users', UserController::class);
+
+        // Protected resource management (create, update, delete)
+        Route::apiResource('stores', StoreController::class)->except(['index', 'show']);
+        Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
+        Route::apiResource('products', ProductController::class)->except(['index', 'show']);
+        Route::apiResource('product-images', ProductImageController::class)->except(['index', 'show']);
+        Route::apiResource('reviews', ReviewController::class)->except(['index', 'show']);
+
+        // Protected user-specific endpoints
+        Route::get('users/{user_id}/carts', [CartController::class, 'getUserCarts']);
+        Route::get('users/{user_id}/orders', [OrderController::class, 'getUserOrders']);
+        Route::get('users/search/name/{name}', [UserController::class, 'searchByName']);
+        Route::get('users/search/email/{email}', [UserController::class, 'searchByEmail']);
+        Route::get('users/{id}/with-reviews', [UserController::class, 'getUserWithReviews']);
+        Route::get('users/{id}/with-carts', [UserController::class, 'getUserWithCarts']);
+    });
+});
 
 // Custom route for category products
 Route::get('categories/{id}/products', [CategoryController::class, 'products']);
