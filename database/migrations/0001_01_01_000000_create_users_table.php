@@ -23,6 +23,12 @@ return new class extends Migration
 
             // User Email
             $table->string('email')->unique();
+            
+            // Email Verification
+            $table->timestamp('email_verified_at')->nullable();
+            
+            // Remember Token
+            $table->rememberToken();
 
             // Profile Image
             $table->string('profile_image')->nullable();
