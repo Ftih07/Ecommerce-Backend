@@ -11,29 +11,26 @@ class CheckRole
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string|array  ...$roles
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle(Request $request, Closure $next, string $roles): Response
     {
+        // If user is not authenticated, deny access
         if (!$request->user()) {
-            return response()->json([
-                'message' => 'Unauthenticated.'
-            ], 401);
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        if (empty($roles)) {
-            return $next($request);
+        // Split roles by comma and trim whitespace
+        $roleNames = array_map('trim', explode(',', $roles));
+
+        // Check if user has any of the required roles
+        foreach ($roleNames as $roleName) {
+            if ($request->user()->hasRole($roleName)) {
+                return $next($request);
+            }
         }
 
-        if ($request->user()->hasRole($roles)) {
-            return $next($request);
-        }
-
-        return response()->json([
-            'message' => 'Unauthorized. You do not have the required role to access this resource.'
-        ], 403);
+        // If user doesn't have any of the required roles, deny access
+        return response()->json(['message' => 'Forbidden. You need one of these roles: ' . $roles], 403);
     }
 }

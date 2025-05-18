@@ -38,14 +38,20 @@ Route::apiResource('reviews', ReviewController::class)->only(['index', 'show']);
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     // Customer resources - accessible by customers and admins
-    Route::middleware(['role:customer,admin'])->group(function() {
+    Route::middleware([App\Http\Middleware\CheckRole::class.':customer,admin'])->group(function() {
         Route::apiResource('carts', CartController::class);
         Route::apiResource('orders', OrderController::class);
         Route::apiResource('payments', PaymentController::class);
     });
 
     // Admin only resources
-    Route::middleware(['role:admin'])->group(function() {
+    Route::middleware([App\Http\Middleware\CheckRole::class.':admin'])->group(function() {
+        // User roles management endpoint - admin only
+        Route::put('users/{id}/roles', [UserController::class, 'updateRoles']);
+    });
+
+    // Admin and seller resources
+    Route::middleware([App\Http\Middleware\CheckRole::class.':admin,seller'])->group(function() {
         Route::apiResource('users', UserController::class);
 
         // Protected resource management (create, update, delete)

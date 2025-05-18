@@ -450,4 +450,98 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Update user roles
+     *
+     * @OA\Put(
+     *     path="/users/{id}/roles",
+     *     summary="Update user roles",
+     *     description="Updates the roles of a specific user. Requires admin privileges.",
+     *     operationId="updateUserRoles",
+     *     tags={"Users"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the user to update",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"roles"},
+     *             @OA\Property(property="roles", type="array", @OA\Items(type="string"), example={"admin", "seller"})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User roles updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User roles updated successfully"),
+     *             @OA\Property(property="user", ref="#/components/schemas/User")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error"
+     *     )
+     * )
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateRoles(Request $request, $id)
+    {
+        try {
+            // Find user
+            $user = $this->userRepository->findById($id);
+            
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+
+            // Validate the request
+            $validator = Validator::make($request->all(), [
+                'roles' => 'required|array',
+                'roles.*' => 'exists:roles,name'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Get role IDs from role names
+            $roleIds = \App\Models\Role::whereIn('name', $request->roles)->pluck('role_id')->toArray();
+            
+            // Sync user roles (this will remove any existing roles and add the new ones)
+            $user->roles()->sync($roleIds);
+
+            // Return updated user with roles
+            $user->load('roles');
+            
+            return response()->json([
+                'message' => 'User roles updated successfully',
+                'user' => $user
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error updating user roles',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

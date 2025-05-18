@@ -126,22 +126,23 @@ class AuthController extends Controller
     /**
      * @OA\Post(
      *     path="/auth/login",
-     *     summary="Authenticate a user",
      *     tags={"Authentication"},
+     *     summary="Authenticate a user",
+     *     operationId="login",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"email", "password"},
-     *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="password123")
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", example="john@example.com"),
+     *             @OA\Property(property="password", type="string", example="password123")
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="User authenticated successfully",
      *         @OA\JsonContent(
-     *             @OA\Property(property="user", ref="#/components/schemas/User"),
-     *             @OA\Property(property="token", type="string", example="2|laravel_sanctum_token")
+     *             @OA\Property(property="token", type="string"),
+     *             @OA\Property(property="user", type="object")
      *         )
      *     ),
      *     @OA\Response(
@@ -155,29 +156,36 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
+        $request->validate([
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
+        // First check if the user exists
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user) {
             return response()->json([
-                'message' => 'The provided credentials are incorrect.'
+                'message' => 'The provided credentials are incorrect.',
+                'debug' => 'User not found'
             ], 401);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // Manually verify the password
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'The provided credentials are incorrect.',
+                'debug' => 'Password mismatch'
+            ], 401);
+        }
+
+        // If we reach here, authentication was successful
+        $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
-            'token' => $token
-        ]);
+            'token' => $token,
+            'user' => $user->load('roles')
+        ], 200);
     }
 
     /**
