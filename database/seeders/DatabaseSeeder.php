@@ -3,9 +3,17 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\StoreSeeder;
+use Database\Seeders\CategorySeeder;
+use Database\Seeders\UserSeeder;
+use Database\Seeders\ProductSeeder;
+use Database\Seeders\ProductImageSeeder;
+use Database\Seeders\ReviewSeeder;
+use Database\Seeders\PaymentSeeder;
+use Database\Seeders\CartSeeder;
+use Database\Seeders\OrderSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,39 +22,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed roles first
+        // Run all seeders in the correct order to maintain relationships
         $this->call([
+            // 1. Core data (no dependencies)
             RoleSeeder::class,
+            StoreSeeder::class,
+            CategorySeeder::class,
+            
+            // 2. Users and role assignments
+            UserSeeder::class,
+            
+            // 3. Products (depends on categories and stores)
+            ProductSeeder::class,
+            ProductImageSeeder::class,
+            
+            // 4. User-generated content and transactions
+            ReviewSeeder::class,
+            PaymentSeeder::class,
+            CartSeeder::class,
+            OrderSeeder::class,
         ]);
 
-        // Create admin user
-        $admin = User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => 'admin123',
-        ]);
-
-        // Assign admin role
-        $admin->roles()->attach(1); // 1 = admin role
-
-        // Create regular test user
-        $user = User::create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'user123',
-        ]);
-
-        // Assign customer role
-        $user->roles()->attach(2); // 2 = customer role
-
-        // Create regular test seller
-        $user = User::create([
-            'name' => 'Test Seller',
-            'email' => 'seller@example.com',
-            'password' => 'sell123',
-        ]);
-
-        // Assign seller role
-        $user->roles()->attach(3); // 2 = seller role
+        // Note: The UserSeeder now handles user creation and role assignment
     }
 }
