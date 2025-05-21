@@ -86,6 +86,7 @@ class CategoryController extends Controller
     /**
      * @OA\Post(
      *     path="/categories",
+     *     security={{"bearerAuth":{}}},
      *     summary="Create a new category",
      *     description="Create a new product category",
      *     operationId="createCategory",
@@ -186,6 +187,7 @@ class CategoryController extends Controller
     /**
      * @OA\Put(
      *     path="/categories/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update category data",
      *     description="Update category data by ID",
      *     operationId="updateCategory",
@@ -246,6 +248,7 @@ class CategoryController extends Controller
     /**
      * @OA\Delete(
      *     path="/categories/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Delete a category",
      *     description="Delete category by ID",
      *     operationId="deleteCategory",

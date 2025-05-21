@@ -46,6 +46,7 @@ class ProductController extends Controller
     /**
  * @OA\Post(
  *     path="/products",
+ *     security={{"bearerAuth":{}}},
  *     summary="Create a new product",
  *     tags={"Products"},
  *     @OA\RequestBody(
@@ -127,6 +128,7 @@ class ProductController extends Controller
     /**
  * @OA\Put(
  *     path="/products/{id}",
+ *     security={{"bearerAuth":{}}},
  *     summary="Update an existing product",
  *     tags={"Products"},
  *     @OA\Parameter(
@@ -182,6 +184,7 @@ class ProductController extends Controller
     /**
  * @OA\Delete(
  *     path="/products/{id}",
+ *     security={{"bearerAuth":{}}},
  *     summary="Delete a product",
  *     tags={"Products"},
  *     @OA\Parameter(

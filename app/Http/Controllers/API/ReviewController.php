@@ -130,6 +130,7 @@ class ReviewController extends Controller
     /**
      * @OA\Post(
      *     path="/reviews",
+     *     security={{"bearerAuth":{}}},
      *     summary="Create a review",
      *     description="Membuat review baru untuk produk",
      *     operationId="createReview",
@@ -254,6 +255,7 @@ class ReviewController extends Controller
     /**
      * @OA\Put(
      *     path="/reviews/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update a review",
      *     description="Memperbarui review berdasarkan ID",
      *     operationId="updateReview",
@@ -339,6 +341,7 @@ class ReviewController extends Controller
     /**
      * @OA\Delete(
      *     path="/reviews/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Delete a review",
      *     description="Menghapus review berdasarkan ID",
      *     operationId="deleteReview",

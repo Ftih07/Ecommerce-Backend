@@ -27,6 +27,7 @@ class PaymentController extends Controller
     /**
      * @OA\Get(
      *     path="/payments",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get all payments",
      *     description="Retrieve a list of all payment records",
      *     operationId="getPayments",
@@ -46,6 +47,7 @@ class PaymentController extends Controller
     /**
      * @OA\Post(
      *     path="/payments",
+     *     security={{"bearerAuth":{}}},
      *     summary="Create a new payment",
      *     description="Create a new payment record",
      *     operationId="createPayment",
@@ -87,6 +89,7 @@ class PaymentController extends Controller
     /**
      * @OA\Get(
      *     path="/payments/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get a payment by ID",
      *     description="Retrieve specific payment details by ID",
      *     operationId="getPaymentById",
@@ -124,6 +127,7 @@ class PaymentController extends Controller
     /**
      * @OA\Put(
      *     path="/payments/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update a payment",
      *     description="Update an existing payment record",
      *     operationId="updatePayment",
@@ -183,6 +187,7 @@ class PaymentController extends Controller
     /**
      * @OA\Delete(
      *     path="/payments/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Delete a payment",
      *     description="Delete an existing payment record",
      *     operationId="deletePayment",

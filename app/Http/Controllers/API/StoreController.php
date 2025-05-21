@@ -50,6 +50,7 @@ class StoreController extends Controller
     /**
      * @OA\Post(
      *     path="/stores",
+     *     security={{"bearerAuth":{}}},
      *     summary="Create a new store",
      *     description="Membuat toko baru",
      *     operationId="createStore",
@@ -126,6 +127,7 @@ class StoreController extends Controller
     /**
      * @OA\Put(
      *     path="/stores/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update store data",
      *     description="Memperbarui data toko berdasarkan ID",
      *     operationId="updateStore",
@@ -177,6 +179,7 @@ class StoreController extends Controller
     /**
      * @OA\Delete(
      *     path="/stores/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Delete a store",
      *     description="Menghapus toko berdasarkan ID",
      *     operationId="deleteStore",

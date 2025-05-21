@@ -29,6 +29,7 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *     path="/users",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get all users",
      *     description="Mengambil semua data user",
      *     operationId="getUsers",
@@ -53,6 +54,7 @@ class UserController extends Controller
     /**
      * @OA\Post(
      *     path="/users",
+     *     security={{"bearerAuth":{}}},
      *     summary="Create a new user",
      *     description="Membuat user baru",
      *     operationId="createUser",
@@ -113,6 +115,7 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *     path="/users/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get a user by ID",
      *     description="Mengambil data user berdasarkan ID",
      *     operationId="getUserById",
@@ -149,6 +152,7 @@ class UserController extends Controller
     /**
      * @OA\Put(
      *     path="/users/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update user data",
      *     description="Memperbarui data user berdasarkan ID",
      *     operationId="updateUser",
@@ -225,6 +229,7 @@ class UserController extends Controller
     /**
     * @OA\Delete(
     *     path="/users/{id}",
+    *     security={{"bearerAuth":{}}},
     *     summary="Delete a user",
     *     description="Menghapus user berdasarkan ID",
     *     operationId="deleteUser",
@@ -272,6 +277,7 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *     path="/users/search/name/{name}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Search users by name",
      *     description="Search for users whose name contains the given string",
      *     operationId="searchUsersByName",
@@ -320,6 +326,7 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *     path="/users/search/email/{email}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Search users by email",
      *     description="Search for users whose email contains the given string",
      *     operationId="searchUsersByEmail",
@@ -368,6 +375,7 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *     path="/users/{id}/with-reviews",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get a user with their reviews",
      *     description="Retrieves user data along with all reviews they've written",
      *     operationId="getUserWithReviews",
@@ -411,6 +419,7 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *     path="/users/{id}/with-carts",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get a user with their shopping carts",
      *     description="Retrieves user data along with all their shopping carts",
      *     operationId="getUserWithCarts",
@@ -456,6 +465,7 @@ class UserController extends Controller
      *
      * @OA\Put(
      *     path="/users/{id}/roles",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update user roles",
      *     description="Updates the roles of a specific user. Requires admin privileges.",
      *     operationId="updateUserRoles",

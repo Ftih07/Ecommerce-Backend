@@ -50,6 +50,7 @@ class ProductImageController extends Controller
 /**
  * @OA\Post(
  *     path="/product-images",
+ *     security={{"bearerAuth":{}}},
  *     summary="Create a new product image",
  *     tags={"Product Images"},
  *     @OA\RequestBody(
@@ -119,6 +120,7 @@ class ProductImageController extends Controller
 /**
  * @OA\Put(
  *     path="/product-images/{id}",
+ *     security={{"bearerAuth":{}}},
  *     summary="Update a product image",
  *     tags={"Product Images"},
  *     @OA\Parameter(
@@ -166,6 +168,7 @@ class ProductImageController extends Controller
 /**
  * @OA\Delete(
  *     path="/product-images/{id}",
+ *     security={{"bearerAuth":{}}},
  *     summary="Delete a product image",
  *     tags={"Product Images"},
  *     @OA\Parameter(

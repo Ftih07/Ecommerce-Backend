@@ -30,6 +30,7 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/orders",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get all orders",
      *     description="Retrieve all orders with optional filtering and pagination",
      *     tags={"Orders"},
@@ -108,6 +109,7 @@ class OrderController extends Controller
     /**
      * @OA\Post(
      *     path="/orders",
+     *     security={{"bearerAuth":{}}},
      *     summary="Create a new order",
      *     description="Create a new order with validation of related cart and payment entities",
      *     tags={"Orders"},
@@ -185,6 +187,7 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/orders/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get an order by ID",
      *     description="Retrieve detailed order information by ID with related entities",
      *     tags={"Orders"},
@@ -219,6 +222,7 @@ class OrderController extends Controller
     /**
      * @OA\Put(
      *     path="/orders/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update an order",
      *     description="Update order details with validation of related entities",
      *     tags={"Orders"},
@@ -303,6 +307,7 @@ class OrderController extends Controller
     /**
      * @OA\Delete(
      *     path="/orders/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Delete an order",
      *     description="Delete an existing order",
      *     tags={"Orders"},
@@ -339,6 +344,7 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/users/{user_id}/orders",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get user's orders",
      *     description="Retrieve all orders for a specific user",
      *     tags={"Orders"},

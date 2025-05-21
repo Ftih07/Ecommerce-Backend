@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class CartController extends Controller
 {
     /**
-     * @var CartRepositoryInterface
+     * @var CartRepository
      */
     protected $cartRepository;
 
@@ -29,6 +29,7 @@ class CartController extends Controller
     /**
      * @OA\Get(
      *     path="/carts",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get all carts",
      *     description="Retrieves all shopping carts with optional filtering and pagination",
      *     tags={"Carts"},
@@ -86,6 +87,7 @@ class CartController extends Controller
     /**
      * @OA\Post(
      *     path="/carts",
+     *     security={{"bearerAuth":{}}},
      *     summary="Create a new cart",
      *     description="Create a new shopping cart item with product price calculation",
      *     tags={"Carts"},
@@ -143,6 +145,7 @@ class CartController extends Controller
     /**
      * @OA\Get(
      *     path="/carts/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get a cart by ID",
      *     description="Retrieve detailed shopping cart information by ID",
      *     tags={"Carts"},
@@ -177,6 +180,7 @@ class CartController extends Controller
     /**
      * @OA\Put(
      *     path="/carts/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Update a cart",
      *     description="Update cart details with automatic price recalculation",
      *     tags={"Carts"},
@@ -240,6 +244,7 @@ class CartController extends Controller
     /**
      * @OA\Delete(
      *     path="/carts/{id}",
+     *     security={{"bearerAuth":{}}},
      *     summary="Delete a cart",
      *     description="Delete a shopping cart item",
      *     tags={"Carts"},
@@ -289,6 +294,7 @@ class CartController extends Controller
     /**
      * @OA\Get(
      *     path="/users/{user_id}/carts",
+     *     security={{"bearerAuth":{}}},
      *     summary="Get user's cart items",
      *     description="Retrieve all cart items for a specific user",
      *     tags={"Carts"},

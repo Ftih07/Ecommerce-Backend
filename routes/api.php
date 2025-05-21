@@ -55,11 +55,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('users', UserController::class);
 
         // Protected resource management (create, update, delete)
-        Route::apiResource('stores', StoreController::class)->except(['index', 'show']);
-        Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
-        Route::apiResource('products', ProductController::class)->except(['index', 'show']);
-        Route::apiResource('product-images', ProductImageController::class)->except(['index', 'show']);
-        Route::apiResource('reviews', ReviewController::class)->except(['index', 'show']);
+        Route::apiResource('stores', StoreController::class)->except(['index', 'show', 'getStoreWithProducts', 'search', 'getByCity']);
+        Route::apiResource('categories', CategoryController::class)->except(['index', 'show', 'products']);
+        Route::apiResource('products', ProductController::class)->except(['index', 'show', 'getStoreProducts']);
+        Route::apiResource('product-images', ProductImageController::class)->except(['index', 'show', 'getProductImages']);
+        Route::apiResource('reviews', ReviewController::class)->except(['index', 'show', 'getProductReviews', 'getUserReviews']);
 
         // Protected user-specific endpoints
         Route::get('users/{user_id}/carts', [CartController::class, 'getUserCarts']);
