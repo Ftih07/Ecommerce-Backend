@@ -125,7 +125,7 @@
                     "Authentication"
                 ],
                 "summary": "Authenticate a user",
-                "operationId": "1ff9c65c5cd1a8e0786e318eed856972",
+                "operationId": "login",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -138,12 +138,10 @@
                                 "properties": {
                                     "email": {
                                         "type": "string",
-                                        "format": "email",
                                         "example": "john@example.com"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "format": "password",
                                         "example": "password123"
                                     }
                                 },
@@ -159,12 +157,11 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
-                                        },
                                         "token": {
-                                            "type": "string",
-                                            "example": "2|laravel_sanctum_token"
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"

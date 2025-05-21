@@ -38,5 +38,15 @@ class DatabaseSeeder extends Seeder
 
         // Assign customer role
         $user->roles()->attach(2); // 2 = customer role
+
+        // Create regular test seller
+        $user = User::create([
+            'name' => 'Test Seller',
+            'email' => 'seller@example.com',
+            'password' => 'sell123',
+        ]);
+
+        // Assign seller role
+        $user->roles()->attach(3); // 2 = seller role
     }
 }
