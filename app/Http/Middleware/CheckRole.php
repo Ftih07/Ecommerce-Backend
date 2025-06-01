@@ -14,18 +14,19 @@ class CheckRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $roles): Response
+    public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         // If user is not authenticated, deny access
+        // return response()->json(['message' => $roles]);
         if (!$request->user()) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         // Split roles by comma and trim whitespace
-        $roleNames = array_map('trim', explode(',', $roles));
+        // $roleNames = array_map('trim', explode(',', $roles));
 
         // Check if user has any of the required roles
-        foreach ($roleNames as $roleName) {
+        foreach ($roles as $roleName) {
             if ($request->user()->hasRole($roleName)) {
                 return $next($request);
             }

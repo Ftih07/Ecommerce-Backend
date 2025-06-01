@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Admin and seller resources
-    Route::middleware([App\Http\Middleware\CheckRole::class.':admin,seller'])->group(function() {
+    Route::middleware([\App\Http\Middleware\CheckRole::class.':admin,seller'])->group(function() {
         Route::apiResource('users', UserController::class);
 
         // Protected resource management (create, update, delete)
